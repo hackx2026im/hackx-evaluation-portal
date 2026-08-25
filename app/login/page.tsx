@@ -85,23 +85,9 @@ export default function LoginPage() {
         <div style={{ position: "relative", zIndex: 1 }}>
           <img
             src="/hackxlogo.webp"
-            alt="hackX 11.0 Logo"
-            style={{ height: "64px", width: "auto", marginBottom: "var(--bw-space-6)" }}
+            alt="hackX Logo"
+            style={{ height: "120px", width: "auto", marginBottom: "var(--bw-space-4)" }}
           />
-          <h1
-            style={{
-              fontFamily: "var(--bw-font-heading)",
-              fontSize: "var(--bw-fs-display)",
-              fontWeight: "var(--bw-fw-bold)" as any,
-              lineHeight: "var(--bw-lh-tight)",
-              color: "var(--bw-white)",
-              marginBottom: "var(--bw-space-4)",
-            }}
-          >
-            hackX
-            <br />
-            11.0
-          </h1>
           <p
             style={{
               fontSize: "var(--bw-fs-lg)",
@@ -144,20 +130,9 @@ export default function LoginPage() {
           >
             <img
               src="/hackxlogo.webp"
-              alt="hackX 11.0 Logo"
-              style={{ height: "48px", width: "auto", marginBottom: "var(--bw-space-3)", display: "inline-block" }}
+              alt="hackX Logo"
+              style={{ height: "96px", width: "auto", marginBottom: "var(--bw-space-3)", display: "inline-block" }}
             />
-            <h1
-              style={{
-                fontFamily: "var(--bw-font-heading)",
-                fontSize: "clamp(1.5rem, 5vw, 2rem)",
-                fontWeight: "var(--bw-fw-bold)" as any,
-                color: "var(--bw-content-primary)",
-                lineHeight: "var(--bw-lh-tight)",
-              }}
-            >
-              hackX 11.0
-            </h1>
             <p
               style={{
                 marginTop: "var(--bw-space-2)",
