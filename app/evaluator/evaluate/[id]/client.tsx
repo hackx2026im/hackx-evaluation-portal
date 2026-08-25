@@ -329,7 +329,15 @@ export function EvaluationViewClient({
                             criterion.max_score
                           )
                         }
-                        style={{ width: 64, textAlign: "center", fontWeight: "var(--bw-fw-bold)" as any, height: 44, fontSize: "16px" /* prevent iOS zoom */ }}
+                        style={{ 
+                          width: 64, 
+                          textAlign: "center", 
+                          fontWeight: "var(--bw-fw-bold)" as any, 
+                          height: 44, 
+                          fontSize: "16px", /* prevent iOS zoom */
+                          border: "1.5px solid rgba(255, 255, 255, 0.8)",
+                          backgroundColor: "rgba(255, 255, 255, 0.05)"
+                        }}
                         disabled={!isEditing}
                       />
                       <span style={{ fontSize: "var(--bw-fs-xs)", fontWeight: "var(--bw-fw-medium)" as any, color: "var(--bw-content-secondary)", whiteSpace: "nowrap" }}>
