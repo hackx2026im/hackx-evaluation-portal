@@ -96,7 +96,7 @@ export default function LoginPage() {
               maxWidth: 400,
             }}
           >
-            Discover ideas. Evaluate potential. Shape the future.
+            Evaluation Portal
           </p>
         </div>
       </div>
@@ -138,7 +138,7 @@ export default function LoginPage() {
                 color: "var(--bw-content-secondary)",
               }}
             >
-              Evaluation portal for the lecture panel.
+              Evaluation Portal
             </p>
           </div>
 
