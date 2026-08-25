@@ -174,7 +174,7 @@ export default function UploadProposalsPage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-6)", maxWidth: 1024, margin: "0 auto" }}>
       <div>
-        <h2 style={{ fontFamily: "var(--bw-font-heading)", fontSize: "var(--bw-fs-h1)", fontWeight: "var(--bw-fw-bold)" as any, lineHeight: "var(--bw-lh-tight)", color: "var(--bw-content-primary)" }}>Upload Proposals</h2>
+        <h2 style={{ fontFamily: "var(--bw-font-heading)", fontSize: "var(--bw-fs-h1-fluid)", fontWeight: "var(--bw-fw-bold)" as any, lineHeight: "var(--bw-lh-tight)", color: "var(--bw-content-primary)" }}>Upload Proposals</h2>
         <p style={{ marginTop: "var(--bw-space-2)", fontSize: "var(--bw-fs-sm)", color: "var(--bw-content-secondary)" }}>
           Add team proposals for the evaluation portal via single entry or bulk CSV.
         </p>

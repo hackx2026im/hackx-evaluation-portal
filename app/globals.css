@@ -7,17 +7,17 @@
 
 :root {
   /* ── Core Palette ── */
-  --bw-black: #01050a;
+  --bw-black: #000000;
   --bw-white: #ffffff;
 
   /* ── Surface & Background ── */
-  --bw-bg-primary: #ffffff;
+  --bw-bg-primary: var(--bw-white);
   --bw-bg-secondary: #f9f9f9;
   --bw-bg-tertiary: #efefef;
-  --bw-bg-inverse: #01050a;
+  --bw-bg-inverse: var(--bw-black);
 
   /* ── Content / Text ── */
-  --bw-content-primary: #01050a;
+  --bw-content-primary: var(--bw-black);
   --bw-content-secondary: #4b4b4b;
   --bw-content-tertiary: #757575;
   --bw-content-disabled: #afafaf;
@@ -27,14 +27,14 @@
   --bw-hover: #e2e2e2;
   --bw-hover-light: #f3f3f3;
   --bw-chip: #efefef;
-  --bw-active: rgba(26, 111, 212, 0.08); /* #1a6fd4 */
-  --bw-selected: #1a6fd4;
-  --bw-selected-text: #ffffff;
+  --bw-active: rgba(0, 0, 0, 0.08);
+  --bw-selected: var(--bw-black);
+  --bw-selected-text: var(--bw-white);
 
   /* ── Borders ── */
   --bw-border: #e2e2e2;
-  --bw-border-strong: #010814;
-  --bw-border-focus: #1a6fd4;
+  --bw-border-strong: var(--bw-black);
+  --bw-border-focus: var(--bw-black);
 
   /* ── Semantic ── */
   --bw-negative: #e11900;
@@ -43,8 +43,8 @@
   --bw-warning-bg: #fff8e6;
   --bw-positive: #048848;
   --bw-positive-bg: #e6f2ed;
-  --bw-accent: #1a6fd4;
-  --bw-accent-bg: #eef3fe;
+  --bw-accent: var(--bw-black);
+  --bw-accent-bg: var(--bw-chip);
 
   /* ── Shadows ── */
   --bw-shadow-100: 0px 4px 16px rgba(0, 0, 0, 0.12);
@@ -66,6 +66,12 @@
   --bw-fs-base: 1rem;          /* 16px */
   --bw-fs-sm: 0.875rem;        /* 14px */
   --bw-fs-xs: 0.75rem;         /* 12px */
+
+  /* Fluid page/section headings — scale down on narrow screens so a 36px
+     title never overflows a 320px viewport, but land on the fixed scale
+     above at desktop widths. */
+  --bw-fs-h1-fluid: clamp(1.75rem, 1.25rem + 2.5vw, var(--bw-fs-h1));
+  --bw-fs-h2-fluid: clamp(1.5rem, 1.15rem + 1.75vw, var(--bw-fs-h2));
 
   --bw-lh-tight: 1.23;
   --bw-lh-heading: 1.33;
@@ -112,27 +118,27 @@
    Dark Mode Overrides
    ═══════════════════════════════════════ */
 .dark {
-  --bw-bg-primary: #01050a;
-  --bw-bg-secondary: #010814;
-  --bw-bg-tertiary: #031126;
+  --bw-bg-primary: var(--bw-black);
+  --bw-bg-secondary: #111111;
+  --bw-bg-tertiary: #222222;
   --bw-bg-inverse: #ffffff;
 
   --bw-content-primary: #ffffff;
   --bw-content-secondary: #afafaf;
   --bw-content-tertiary: #757575;
   --bw-content-disabled: #4b4b4b;
-  --bw-content-inverse: #01050a;
+  --bw-content-inverse: var(--bw-black);
 
-  --bw-hover: #031126;
-  --bw-hover-light: #010814;
-  --bw-chip: #031126;
-  --bw-active: rgba(91, 184, 255, 0.08); /* #5bb8ff */
-  --bw-selected: #1a6fd4;
-  --bw-selected-text: #ffffff;
+  --bw-hover: #333333;
+  --bw-hover-light: #111111;
+  --bw-chip: #333333;
+  --bw-active: rgba(255, 255, 255, 0.08);
+  --bw-selected: var(--bw-white);
+  --bw-selected-text: var(--bw-black);
 
-  --bw-border: #031126;
-  --bw-border-strong: #0a3878;
-  --bw-border-focus: #5bb8ff;
+  --bw-border: #333333;
+  --bw-border-strong: var(--bw-white);
+  --bw-border-focus: var(--bw-white);
 
   --bw-negative: #ff6347;
   --bw-negative-bg: #3d1410;
@@ -140,8 +146,8 @@
   --bw-warning-bg: #3d3010;
   --bw-positive: #3aa76d;
   --bw-positive-bg: #10322a;
-  --bw-accent: #5bb8ff;
-  --bw-accent-bg: #0a3878;
+  --bw-accent: var(--bw-white);
+  --bw-accent-bg: #333333;
 
   --bw-shadow-100: 0px 4px 16px rgba(0, 0, 0, 0.4);
   --bw-shadow-200: 0px 4px 16px rgba(0, 0, 0, 0.5);
@@ -229,8 +235,29 @@ img {
 }
 
 /* ═══════════════════════════════════════
-   Skeleton Loading Animation
+   Layout Container
+   DESIGN.md §5 — max container width 1136px, centred
    ═══════════════════════════════════════ */
+.bw-container {
+  width: 100%;
+  max-width: var(--bw-container);
+  margin-inline: auto;
+  min-width: 0;
+}
+
+/* ═══════════════════════════════════════
+   Keyframes & Loading Animation
+   ═══════════════════════════════════════ */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
 @keyframes skeleton-pulse {
   0% { opacity: 1; }
   50% { opacity: 0.4; }
@@ -513,11 +540,16 @@ img {
   overflow: hidden;
 }
 
+/* Filled via scaleX rather than width so the live score bar composites on the
+   GPU instead of triggering layout on every keystroke. */
 .bw-progress-bar {
+  width: 100%;
   height: 100%;
   background: var(--bw-bg-inverse);
   border-radius: var(--bw-radius-pill);
-  transition: width var(--bw-duration-slow) var(--bw-easing);
+  transform-origin: left center;
+  transform: scaleX(var(--bw-progress-value, 0));
+  transition: transform var(--bw-duration-slow) var(--bw-easing);
 }
 
 /* ═══════════════════════════════════════

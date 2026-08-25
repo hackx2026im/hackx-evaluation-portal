@@ -282,10 +282,10 @@ export function EvaluationViewClient({
         </div>
       </div>
       {sections.map((section) => (
-        <Card key={section.id} variant="flat" style={{ opacity: !isEditing ? 0.9 : 1, background: !isEditing ? "var(--bw-chip)" : undefined }}>
-          <CardHeader style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: "var(--bw-space-5) var(--bw-space-6)", borderBottom: "1px solid var(--bw-border)" }}>
+        <div key={section.id} style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-4)", marginTop: "var(--bw-space-4)" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingBottom: "var(--bw-space-2)", borderBottom: "2px solid var(--bw-border-strong)" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-              <CardTitle style={{ fontSize: "var(--bw-fs-h4)", margin: 0 }}>{section.name}</CardTitle>
+              <h3 style={{ fontSize: "var(--bw-fs-h3)", fontWeight: "var(--bw-fw-bold)", margin: 0 }}>{section.name}</h3>
               <p style={{ fontSize: "var(--bw-fs-sm)", color: "var(--bw-content-secondary)", margin: 0 }}>
                 {section.total_marks} marks total
               </p>
@@ -297,72 +297,75 @@ export function EvaluationViewClient({
               )}{" "}
               / {section.total_marks}
             </Badge>
-          </CardHeader>
-          <CardContent style={{ display: "flex", flexDirection: "column", gap: 0, padding: 0 }}>
-            {(section.criteria ?? []).map((criterion, idx) => (
-              <div key={criterion.id} style={{ padding: "var(--bw-space-5) var(--bw-space-6)", borderTop: idx > 0 ? "1px solid var(--bw-border)" : "none", display: "flex", flexDirection: "column", gap: "var(--bw-space-3)" }}>
-                <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: "var(--bw-space-3)" }}>
-                  <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "var(--bw-space-1)" }}>
-                    <h3 style={{ fontSize: "var(--bw-fs-sm)", fontWeight: "var(--bw-fw-medium)" as any }}>{criterion.name}</h3>
-                    <p style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-secondary)", lineHeight: "var(--bw-lh-relaxed)" }}>
-                      {criterion.description}
-                    </p>
+          </div>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-4)" }}>
+            {(section.criteria ?? []).map((criterion) => (
+              <Card key={criterion.id} variant="flat" style={{ opacity: !isEditing ? 0.9 : 1, background: "var(--bw-bg-primary)" }}>
+                <CardContent style={{ padding: "var(--bw-space-5) var(--bw-space-6)", display: "flex", flexDirection: "column", gap: "var(--bw-space-3)" }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: "var(--bw-space-3)" }}>
+                    <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "var(--bw-space-1)" }}>
+                      <h4 style={{ fontSize: "var(--bw-fs-sm)", fontWeight: "var(--bw-fw-medium)" as any, margin: 0 }}>{criterion.name}</h4>
+                      <p style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-secondary)", lineHeight: "var(--bw-lh-relaxed)", margin: 0 }}>
+                        {criterion.description}
+                      </p>
+                    </div>
+                    {/* Score input — fixed size, 44px min height per DESIGN.md touch targets */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--bw-space-2)", flexShrink: 0, paddingTop: 2 }}>
+                      <Input
+                        id={`score-${criterion.id}`}
+                        type="number"
+                        min={0}
+                        max={criterion.max_score}
+                        value={
+                          scores[criterion.id] !== undefined
+                            ? String(scores[criterion.id])
+                            : ""
+                        }
+                        onChange={(e) =>
+                          handleScoreChange(
+                            criterion.id,
+                            e.target.value,
+                            criterion.max_score
+                          )
+                        }
+                        style={{ width: 64, textAlign: "center", fontWeight: "var(--bw-fw-bold)" as any, height: 44, fontSize: "16px" /* prevent iOS zoom */ }}
+                        disabled={!isEditing}
+                      />
+                      <span style={{ fontSize: "var(--bw-fs-xs)", fontWeight: "var(--bw-fw-medium)" as any, color: "var(--bw-content-secondary)", whiteSpace: "nowrap" }}>
+                        / {criterion.max_score}
+                      </span>
+                    </div>
                   </div>
-                  {/* Score input — fixed size, 44px min height per DESIGN.md touch targets */}
-                  <div style={{ display: "flex", alignItems: "center", gap: "var(--bw-space-2)", flexShrink: 0, paddingTop: 2 }}>
-                    <Input
-                      id={`score-${criterion.id}`}
-                      type="number"
-                      min={0}
-                      max={criterion.max_score}
-                      value={
-                        scores[criterion.id] !== undefined
-                          ? String(scores[criterion.id])
-                          : ""
-                      }
-                      onChange={(e) =>
-                        handleScoreChange(
-                          criterion.id,
-                          e.target.value,
-                          criterion.max_score
-                        )
-                      }
-                      style={{ width: 64, textAlign: "center", fontWeight: "var(--bw-fw-bold)" as any, height: 44, fontSize: "16px" /* prevent iOS zoom */ }}
-                      disabled={!isEditing}
-                    />
-                    <span style={{ fontSize: "var(--bw-fs-xs)", fontWeight: "var(--bw-fw-medium)" as any, color: "var(--bw-content-secondary)", whiteSpace: "nowrap" }}>
-                      / {criterion.max_score}
-                    </span>
+
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {criterion.grading_bands.map((band, idx) => (
+                      <Badge
+                        key={idx}
+                        variant={getBandColor(band) as any}
+                        style={{ fontWeight: "var(--bw-fw-normal)" as any }}
+                      >
+                        {band}
+                      </Badge>
+                    ))}
                   </div>
-                </div>
 
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {criterion.grading_bands.map((band, idx) => (
-                    <Badge
-                      key={idx}
-                      variant={getBandColor(band) as any}
-                      style={{ fontWeight: "var(--bw-fw-normal)" as any }}
-                    >
-                      {band}
-                    </Badge>
-                  ))}
-                </div>
-
-                <Textarea
-                  id={`notes-${criterion.id}`}
-                  placeholder={`Comments for ${criterion.name}...`}
-                  value={notes[criterion.id] ?? ""}
-                  onChange={(e) => handleNotesChange(criterion.id, e.target.value)}
-                  style={{ minHeight: 60, fontSize: "var(--bw-fs-sm)" }}
-                  disabled={!isEditing}
-                />
-              </div>
+                  <Textarea
+                    id={`notes-${criterion.id}`}
+                    placeholder={`Comments for ${criterion.name}...`}
+                    value={notes[criterion.id] ?? ""}
+                    onChange={(e) => handleNotesChange(criterion.id, e.target.value)}
+                    style={{ minHeight: 60, fontSize: "var(--bw-fs-sm)" }}
+                    disabled={!isEditing}
+                  />
+                </CardContent>
+              </Card>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       ))}
 
-      <Card variant="flat" style={{ opacity: !isEditing ? 0.9 : 1, background: !isEditing ? "var(--bw-chip)" : undefined }}>
+      <Card variant="flat" style={{ opacity: !isEditing ? 0.9 : 1, background: "var(--bw-bg-primary)" }}>
         <CardHeader style={{ padding: "var(--bw-space-6) var(--bw-space-6) var(--bw-space-4)", borderBottom: "1px solid var(--bw-border)" }}>
           <CardTitle style={{ fontSize: "var(--bw-fs-h4)" }}>Overall Comments</CardTitle>
         </CardHeader>
@@ -400,7 +403,7 @@ export function EvaluationViewClient({
             </Button>
             <div style={{ display: "flex", alignItems: "center", gap: "var(--bw-space-3)" }}>
               <h2
-                style={{ fontFamily: "var(--bw-font-heading)", fontSize: "var(--bw-fs-h2)", fontWeight: "var(--bw-fw-bold)" as any, lineHeight: "var(--bw-lh-tight)" }}
+                style={{ fontFamily: "var(--bw-font-heading)", fontSize: "var(--bw-fs-h2-fluid)", fontWeight: "var(--bw-fw-bold)" as any, lineHeight: "var(--bw-lh-tight)" }}
               >
                 {proposal.team_name}
               </h2>
@@ -412,7 +415,7 @@ export function EvaluationViewClient({
                 </Badge>
               )}
               {isAdmin && evaluationsLocked && (
-                <Badge variant="positive" style={{ fontSize: "10px" }}>Admin Override</Badge>
+                <Badge variant="positive" style={{ fontSize: "var(--bw-fs-xs)" }}>Admin Override</Badge>
               )}
             </div>
             {proposal.description && (
@@ -427,7 +430,7 @@ export function EvaluationViewClient({
           <>
             {/* Desktop layout */}
             <div className="hidden xl:grid xl:grid-cols-[3fr_2fr] xl:gap-6 items-start">
-              <div style={{ border: "1px solid var(--bw-border)", borderRadius: "var(--bw-radius-md)", overflow: "hidden", background: "var(--bw-chip)", display: "flex", flexDirection: "column", height: "calc(100vh - 180px)", position: "sticky", top: 90 }}>
+              <div style={{ border: "1px solid var(--bw-border-strong)", borderRadius: "var(--bw-radius-md)", overflow: "hidden", background: "var(--bw-bg-primary)", display: "flex", flexDirection: "column", height: "calc(100vh - 180px)", position: "sticky", top: 90 }}>
                 <Tabs defaultValue={hasPdf ? "document" : "video"} style={{ display: "flex", flexDirection: "column", height: "100%" }}>
                   <TabsList variant="line" style={{ padding: "0 var(--bw-space-3)", flexShrink: 0 }}>
                     {hasPdf && (
@@ -502,7 +505,7 @@ export function EvaluationViewClient({
 
                 {hasPdf && (
                   <TabsContent value="document">
-                    <div style={{ border: "1px solid var(--bw-border)", borderRadius: "var(--bw-radius-md)", overflow: "hidden", background: "var(--bw-chip)", minHeight: "60vh" }}>
+                    <div style={{ border: "1px solid var(--bw-border-strong)", borderRadius: "var(--bw-radius-md)", overflow: "hidden", background: "var(--bw-bg-primary)", minHeight: "60vh" }}>
                       <PdfAnnotationPanel
                         proposalUrl={proposal.proposal_url}
                         proposalId={proposal.id}
@@ -517,7 +520,7 @@ export function EvaluationViewClient({
 
                 {hasVideo && (
                   <TabsContent value="video">
-                    <div style={{ border: "1px solid var(--bw-border)", borderRadius: "var(--bw-radius-md)", overflow: "hidden", background: "var(--bw-chip)" }}>
+                    <div style={{ border: "1px solid var(--bw-border-strong)", borderRadius: "var(--bw-radius-md)", overflow: "hidden", background: "var(--bw-bg-primary)" }}>
                       <VideoPanel
                         videoUrl={proposal.video_url}
                         proposalId={proposal.id}

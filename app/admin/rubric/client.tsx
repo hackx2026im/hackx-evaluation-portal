@@ -309,7 +309,7 @@ export function RubricEditorClient({
           <h2
             style={{
               fontFamily: "var(--bw-font-heading)",
-              fontSize: "var(--bw-fs-h2)",
+              fontSize: "var(--bw-fs-h1-fluid)",
               fontWeight: "var(--bw-fw-bold)" as any,
               lineHeight: "var(--bw-lh-tight)",
             }}
@@ -349,13 +349,13 @@ export function RubricEditorClient({
             }}
           >
             {globalMismatch ? (
-              <AlertTriangle size={14} style={{ color: "#f59e0b", flexShrink: 0 }} />
+              <AlertTriangle size={14} style={{ color: "var(--bw-warning)", flexShrink: 0 }} />
             ) : (
-              <CheckCircle2 size={14} style={{ color: "#22c55e", flexShrink: 0 }} />
+              <CheckCircle2 size={14} style={{ color: "var(--bw-positive)", flexShrink: 0 }} />
             )}
             <span style={{ color: "var(--bw-content-secondary)" }}>Grand total:</span>
             <strong
-              style={{ color: globalMismatch ? "#f59e0b" : "var(--bw-content-primary)" }}
+              style={{ color: globalMismatch ? "var(--bw-warning)" : "var(--bw-content-primary)" }}
             >
               {grandTotalCriteria} / {grandTotalSections} pts
             </strong>
@@ -485,8 +485,8 @@ export function RubricEditorClient({
                       variant="outline"
                       style={{
                         gap: 4,
-                        color: mismatch ? "#f59e0b" : "#22c55e",
-                        borderColor: mismatch ? "#f59e0b" : "#22c55e",
+                        color: mismatch ? "var(--bw-warning)" : "var(--bw-positive)",
+                        borderColor: mismatch ? "var(--bw-warning)" : "var(--bw-positive)",
                         fontSize: "var(--bw-fs-xs)",
                         whiteSpace: "nowrap",
                       }}
@@ -564,7 +564,7 @@ export function RubricEditorClient({
                       })
                     }
                     style={{
-                      color: "#ef4444",
+                      color: "var(--bw-negative)",
                       padding: "4px 8px",
                     }}
                     title="Delete section"
@@ -752,7 +752,7 @@ export function RubricEditorClient({
                                 label: criterion.name,
                               })
                             }
-                            style={{ color: "#ef4444", padding: "4px 6px" }}
+                            style={{ color: "var(--bw-negative)", padding: "4px 6px" }}
                             title="Delete criterion"
                           >
                             <Trash2 size={14} />

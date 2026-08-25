@@ -230,7 +230,7 @@ export function AssignmentsClient({ proposals, evaluators, assignments }: Props)
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-6)" }}>
       <div>
-        <h2 style={{ fontFamily: "var(--bw-font-heading)", fontSize: "var(--bw-fs-h1)", fontWeight: "var(--bw-fw-bold)" as any, lineHeight: "var(--bw-lh-tight)", color: "var(--bw-content-primary)" }}>Assign Proposals</h2>
+        <h2 style={{ fontFamily: "var(--bw-font-heading)", fontSize: "var(--bw-fs-h1-fluid)", fontWeight: "var(--bw-fw-bold)" as any, lineHeight: "var(--bw-lh-tight)", color: "var(--bw-content-primary)" }}>Assign Proposals</h2>
         <p style={{ marginTop: "var(--bw-space-2)", fontSize: "var(--bw-fs-sm)", color: "var(--bw-content-secondary)" }}>
           Assign proposals to evaluators. You can assign multiple evaluators to the same proposal.
         </p>

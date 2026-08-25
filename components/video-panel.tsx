@@ -170,7 +170,7 @@ export function VideoPanel({
   const CommentsPanel = (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0 }}>
       {/* Header + add button */}
-      <div style={{ padding: "var(--bw-space-2) var(--bw-space-3)", borderBottom: "1px solid var(--bw-border)", background: "var(--bw-chip)", flexShrink: 0, display: "flex", flexDirection: "column", gap: "var(--bw-space-2)" }}>
+      <div style={{ padding: "var(--bw-space-2) var(--bw-space-3)", borderBottom: "1px solid var(--bw-border)", background: "var(--bw-bg-primary)", flexShrink: 0, display: "flex", flexDirection: "column", gap: "var(--bw-space-2)" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Badge variant="secondary" style={{ fontSize: "var(--bw-fs-xs)", gap: 4, display: "flex", alignItems: "center" }}>
             <Clock size={12} />
@@ -190,7 +190,7 @@ export function VideoPanel({
 
       {/* New comment form */}
       {showForm && (
-        <div style={{ borderBottom: "1px solid var(--bw-border)", padding: "var(--bw-space-3)", background: "var(--bw-chip)", display: "flex", flexDirection: "column", gap: "var(--bw-space-2)", flexShrink: 0 }}>
+        <div style={{ borderBottom: "1px solid var(--bw-border)", padding: "var(--bw-space-3)", background: "var(--bw-bg-primary)", display: "flex", flexDirection: "column", gap: "var(--bw-space-2)", flexShrink: 0 }}>
           <Badge
             variant="secondary"
             style={{ fontSize: "var(--bw-fs-xs)", cursor: "pointer", display: "inline-flex", alignItems: "center", width: "fit-content" }}
@@ -294,7 +294,7 @@ export function VideoPanel({
         </div>
 
         {/* Comments side panel */}
-        <div style={{ width: 240, borderLeft: "1px solid var(--bw-border)", background: "var(--bw-bg-secondary, var(--bw-chip))", flexShrink: 0, display: "flex", flexDirection: "column", minHeight: 0 }}>
+        <div style={{ width: 240, borderLeft: "1px solid var(--bw-border)", background: "var(--bw-bg-primary)", flexShrink: 0, display: "flex", flexDirection: "column", minHeight: 0 }}>
           {CommentsPanel}
         </div>
       </div>

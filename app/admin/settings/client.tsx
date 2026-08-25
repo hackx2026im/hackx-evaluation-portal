@@ -46,7 +46,7 @@ export function AdminSettingsClient({ initialDeadline }: { initialDeadline: stri
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-6)" }}>
       <div>
-        <h2 style={{ fontFamily: "var(--bw-font-heading)", fontSize: "var(--bw-fs-h2)", fontWeight: "var(--bw-fw-bold)" as any, lineHeight: "var(--bw-lh-tight)" }}>System Settings</h2>
+        <h2 style={{ fontFamily: "var(--bw-font-heading)", fontSize: "var(--bw-fs-h1-fluid)", fontWeight: "var(--bw-fw-bold)" as any, lineHeight: "var(--bw-lh-tight)" }}>System Settings</h2>
         <p style={{ marginTop: "var(--bw-space-2)", fontSize: "var(--bw-fs-sm)", color: "var(--bw-content-secondary)" }}>
           Configure global platform parameters
         </p>

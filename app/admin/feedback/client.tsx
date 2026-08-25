@@ -182,7 +182,7 @@ export function AdminFeedbackClient({ feedbackRows, evaluators }: Props) {
         <h2
           style={{
             fontFamily: "var(--bw-font-heading)",
-            fontSize: "var(--bw-fs-h1)",
+            fontSize: "var(--bw-fs-h1-fluid)",
             fontWeight: "var(--bw-fw-bold)" as any,
             lineHeight: "var(--bw-lh-tight)",
           }}
@@ -282,7 +282,7 @@ export function AdminFeedbackClient({ feedbackRows, evaluators }: Props) {
                                   display: "flex",
                                   alignItems: "center",
                                   justifyContent: "center",
-                                  fontSize: "11px",
+                                  fontSize: "var(--bw-fs-xs)",
                                   fontWeight: "var(--bw-fw-medium)" as any,
                                   flexShrink: 0,
                                 }}
@@ -431,7 +431,7 @@ export function AdminFeedbackClient({ feedbackRows, evaluators }: Props) {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            fontSize: "10px",
+                            fontSize: "var(--bw-fs-xs)",
                             color: "var(--bw-content-tertiary)",
                             flexShrink: 0,
                           }}
@@ -441,7 +441,7 @@ export function AdminFeedbackClient({ feedbackRows, evaluators }: Props) {
                         <span style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-secondary)" }}>
                           {e.full_name}
                         </span>
-                        <Badge variant="secondary" style={{ marginLeft: "auto", fontSize: "10px", padding: "0 6px", height: 16 }}>
+                        <Badge variant="secondary" style={{ marginLeft: "auto", fontSize: "var(--bw-fs-xs)", padding: "0 6px", height: 18 }}>
                           Pending
                         </Badge>
                       </div>

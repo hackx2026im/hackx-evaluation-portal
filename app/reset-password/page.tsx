@@ -116,38 +116,11 @@ export default function ResetPasswordPage() {
         />
 
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div
-            style={{
-              width: 48,
-              height: 48,
-              background: "var(--bw-white)",
-              borderRadius: "var(--bw-radius-md)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "var(--bw-black)",
-              fontFamily: "var(--bw-font-heading)",
-              fontWeight: "var(--bw-fw-bold)" as any,
-              fontSize: "var(--bw-fs-h3)",
-              marginBottom: "var(--bw-space-6)",
-            }}
-          >
-            iS
-          </div>
-          <h1
-            style={{
-              fontFamily: "var(--bw-font-heading)",
-              fontSize: "var(--bw-fs-display)",
-              fontWeight: "var(--bw-fw-bold)" as any,
-              lineHeight: "var(--bw-lh-tight)",
-              color: "var(--bw-white)",
-              marginBottom: "var(--bw-space-4)",
-            }}
-          >
-            hackX
-            <br />
-            2026
-          </h1>
+          <img
+            src="/hackxlogo.webp"
+            alt="hackX Logo"
+            style={{ height: "120px", width: "auto", marginBottom: "var(--bw-space-4)" }}
+          />
           <p
             style={{
               fontSize: "var(--bw-fs-lg)",
@@ -156,7 +129,7 @@ export default function ResetPasswordPage() {
               maxWidth: 400,
             }}
           >
-            Security Management.
+            Evaluation portal for the lecture panel.
             <br />
             Reset your password to regain access to your dashboard.
           </p>
@@ -180,35 +153,20 @@ export default function ResetPasswordPage() {
             className="lg:hidden"
             style={{ marginBottom: "var(--bw-space-10)", textAlign: "center" }}
           >
-            <div
+            <img
+              src="/hackxlogo.webp"
+              alt="hackX Logo"
+              style={{ height: "96px", width: "auto", marginBottom: "var(--bw-space-3)", display: "inline-block" }}
+            />
+            <p
               style={{
-                width: 44,
-                height: 44,
-                background: "var(--bw-bg-inverse)",
-                borderRadius: "var(--bw-radius-md)",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "var(--bw-content-inverse)",
-                fontFamily: "var(--bw-font-heading)",
-                fontWeight: "var(--bw-fw-bold)" as any,
-                fontSize: "var(--bw-fs-h4)",
-                marginBottom: "var(--bw-space-3)",
+                marginTop: "var(--bw-space-2)",
+                fontSize: "var(--bw-fs-sm)",
+                color: "var(--bw-content-secondary)",
               }}
             >
-              iS
-            </div>
-            <h1
-              style={{
-                fontFamily: "var(--bw-font-heading)",
-                fontSize: "clamp(1.5rem, 5vw, 2rem)",
-                fontWeight: "var(--bw-fw-bold)" as any,
-                color: "var(--bw-content-primary)",
-                lineHeight: "var(--bw-lh-tight)",
-              }}
-            >
-              hackX 11.0
-            </h1>
+              Evaluation portal for the lecture panel.
+            </p>
           </div>
 
           {initializing ? (

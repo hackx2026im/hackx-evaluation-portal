@@ -37,7 +37,7 @@ const variantStyles: Record<ButtonVariant, React.CSSProperties> = {
   },
   destructive: {
     background: "var(--bw-negative)",
-    color: "#ffffff",
+    color: "var(--bw-white)",
     border: "none",
   },
 };

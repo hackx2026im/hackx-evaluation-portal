@@ -401,7 +401,7 @@ export function OnboardingModal({
               style={{
                 fontFamily: "var(--bw-font-heading)",
                 /* clamp: 1.5rem on mobile → 2rem on desktop */
-                fontSize: "clamp(1.5rem, 4vw, 2rem)",
+                fontSize: "var(--bw-fs-h2-fluid)",
                 fontWeight: "var(--bw-fw-bold)",
                 lineHeight: "var(--bw-lh-tight)",
                 color: "var(--bw-content-primary)",

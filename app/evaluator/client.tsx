@@ -265,7 +265,7 @@ export function EvaluatorDashboardClient({
                       ))}
                       {overallComment && (
                         <div style={{ marginTop: "var(--bw-space-2)", padding: "var(--bw-space-3)", background: "var(--bw-chip)", borderRadius: "var(--bw-radius-md)" }}>
-                          <div style={{ fontSize: "10px", color: "var(--bw-content-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>Overall Comment</div>
+                          <div style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>Overall Comment</div>
                           <p style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-primary)", margin: 0, fontStyle: "italic" }}>{overallComment}</p>
                         </div>
                       )}
@@ -307,9 +307,9 @@ export function EvaluatorDashboardClient({
 
   return (
     <TooltipProvider>
-      <div style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-6)" }}>
+      <div className="bw-container" style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-6)" }}>
         <div>
-          <h2 style={{ fontFamily: "var(--bw-font-heading)", fontSize: "clamp(1.5rem, 5vw, var(--bw-fs-h1))", fontWeight: "var(--bw-fw-bold)" as any, lineHeight: "var(--bw-lh-tight)" }}>Evaluator Dashboard</h2>
+          <h2 style={{ fontFamily: "var(--bw-font-heading)", fontSize: "var(--bw-fs-h1-fluid)", fontWeight: "var(--bw-fw-bold)" as any, lineHeight: "var(--bw-lh-tight)" }}>Evaluator Dashboard</h2>
           <p style={{ marginTop: "var(--bw-space-2)", fontSize: "var(--bw-fs-sm)", color: "var(--bw-content-secondary)" }}>
             Review and evaluate hackX 11.0 proposals
           </p>
@@ -323,11 +323,11 @@ export function EvaluatorDashboardClient({
           {/* My Assignments */}
           <Card variant="flat" style={{ overflow: "hidden", position: "relative" }}>
             <CardContent style={{ padding: "var(--bw-space-5)" }}>
-              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div>
                   <p style={{ fontSize: "var(--bw-fs-xs)", fontWeight: "var(--bw-fw-medium)" as any, color: "var(--bw-content-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--bw-space-2)" }}>My Assignments</p>
                   <p style={{ fontSize: 32, fontWeight: "var(--bw-fw-bold)" as any, lineHeight: 1, letterSpacing: "-0.02em" }}>{myAssignments.length}</p>
-                  <p style={{ fontSize: "10px", color: "var(--bw-content-tertiary)", marginTop: "var(--bw-space-1)" }}>proposals to review</p>
+                  <p style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-tertiary)", marginTop: "var(--bw-space-1)" }}>proposals to review</p>
                 </div>
                 <div style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--bw-chip)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <ClipboardCheck size={18} style={{ color: "var(--bw-content-primary)" }} />
@@ -339,13 +339,13 @@ export function EvaluatorDashboardClient({
           {/* Remaining */}
           <Card variant="flat" style={{ overflow: "hidden", position: "relative" }}>
             <CardContent style={{ padding: "var(--bw-space-5)" }}>
-              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div>
                   <p style={{ fontSize: "var(--bw-fs-xs)", fontWeight: "var(--bw-fw-medium)" as any, color: "var(--bw-content-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--bw-space-2)" }}>Remaining</p>
                   <p style={{ fontSize: 32, fontWeight: "var(--bw-fw-bold)" as any, lineHeight: 1, letterSpacing: "-0.02em", color: myAssignments.filter(p => !gradedProposalIds.includes(p.id)).length > 0 ? "var(--bw-warning)" : "var(--bw-content-primary)" }}>
                     {myAssignments.filter((p) => !gradedProposalIds.includes(p.id)).length}
                   </p>
-                  <p style={{ fontSize: "10px", color: "var(--bw-content-tertiary)", marginTop: "var(--bw-space-1)" }}>yet to grade</p>
+                  <p style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-tertiary)", marginTop: "var(--bw-space-1)" }}>yet to grade</p>
                 </div>
                 <div style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--bw-chip)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <Hourglass size={18} style={{ color: "var(--bw-content-primary)" }} />
@@ -361,11 +361,11 @@ export function EvaluatorDashboardClient({
             return (
               <Card variant="flat" style={{ overflow: "hidden", position: "relative" }}>
                 <CardContent style={{ padding: "var(--bw-space-5)" }}>
-                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <div>
                       <p style={{ fontSize: "var(--bw-fs-xs)", fontWeight: "var(--bw-fw-medium)" as any, color: "var(--bw-content-tertiary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "var(--bw-space-2)" }}>Days Left</p>
                       <p style={{ fontSize: 32, fontWeight: "var(--bw-fw-bold)" as any, lineHeight: 1, letterSpacing: "-0.02em", color: isUrgent ? "var(--bw-negative)" : "var(--bw-content-primary)" }}>{daysLeft}</p>
-                      <p style={{ fontSize: "10px", color: "var(--bw-content-tertiary)", marginTop: "var(--bw-space-1)" }}>until deadline</p>
+                      <p style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-tertiary)", marginTop: "var(--bw-space-1)" }}>until deadline</p>
                     </div>
                     <div style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--bw-chip)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                       <CalendarDays size={18} style={{ color: "var(--bw-content-primary)" }} />
@@ -397,7 +397,7 @@ export function EvaluatorDashboardClient({
                           width: 32,
                           height: 18,
                           borderRadius: 20,
-                          background: showOnlyPending ? "var(--bw-black)" : "var(--bw-chip)",
+                          background: showOnlyPending ? "var(--bw-bg-inverse)" : "var(--bw-chip)",
                           border: "none",
                           position: "relative",
                           cursor: "pointer",
@@ -411,7 +411,7 @@ export function EvaluatorDashboardClient({
                             width: 14,
                             height: 14,
                             borderRadius: "50%",
-                            background: showOnlyPending ? "var(--bw-white)" : "var(--bw-content-tertiary)",
+                            background: showOnlyPending ? "var(--bw-content-inverse)" : "var(--bw-content-tertiary)",
                             transition: "left 0.2s ease",
                           }}
                         />

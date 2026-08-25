@@ -15,7 +15,10 @@ function Progress({ value = 0, max = 100, className = "", style, ...props }: Pro
 
   return (
     <div className={`bw-progress ${className}`} style={style} role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={max} {...props}>
-      <div className="bw-progress-bar" style={{ width: `${percentage}%` }} />
+      <div
+        className="bw-progress-bar"
+        style={{ "--bw-progress-value": percentage / 100 } as React.CSSProperties}
+      />
     </div>
   );
 }

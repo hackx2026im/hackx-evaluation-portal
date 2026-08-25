@@ -25,12 +25,77 @@ const NAV_ITEMS = [
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
+/* The drawer lives next to <main>, but its toggle belongs at the top of the
+   page content — so the open state is shared through context rather than
+   being local to <Sidebar>. */
+const SidebarContext = React.createContext<{
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}>({ open: false, setOpen: () => {} });
+
+export function SidebarProvider({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = React.useState(false);
+  const value = React.useMemo(() => ({ open, setOpen }), [open]);
+  return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>;
+}
+
+/* Circular menu toggle — mobile/tablet only (DESIGN.md §8). */
+export function SidebarTrigger() {
+  const { setOpen } = React.useContext(SidebarContext);
+
+  return (
+    <button
+      type="button"
+      onClick={() => setOpen(true)}
+      aria-label="Open navigation"
+      className="lg:hidden bw-button--ghost"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: 40,
+        height: 40,
+        flexShrink: 0,
+        borderRadius: "var(--bw-radius-circle)",
+        border: "1px solid var(--bw-border)",
+        background: "var(--bw-bg-primary)",
+        color: "var(--bw-content-primary)",
+        cursor: "pointer",
+        transition: "background var(--bw-duration-normal) var(--bw-easing)",
+      }}
+    >
+      <Menu size={18} />
+    </button>
+  );
+}
+
 export function Sidebar() {
   const pathname = usePathname();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const { open, setOpen } = React.useContext(SidebarContext);
 
   const isActive = (href: string) =>
     href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
+
+  // Close the drawer whenever the route changes.
+  React.useEffect(() => {
+    setOpen(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+  // Dismiss on Escape and lock body scroll while the drawer is open.
+  React.useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open, setOpen]);
 
   const navContent = (
     <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "var(--bw-space-1)" }}>
@@ -40,7 +105,8 @@ export function Sidebar() {
           <li key={href}>
             <Link
               href={href}
-              onClick={() => setMobileOpen(false)}
+              onClick={() => setOpen(false)}
+              aria-current={active ? "page" : undefined}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -65,6 +131,14 @@ export function Sidebar() {
     </ul>
   );
 
+  const sectionLabelStyle: React.CSSProperties = {
+    fontSize: "var(--bw-fs-xs)",
+    fontWeight: "var(--bw-fw-medium)" as any,
+    color: "var(--bw-content-disabled)",
+    textTransform: "uppercase",
+    letterSpacing: "0.06em",
+  };
+
   return (
     <>
       {/* Desktop sidebar */}
@@ -79,31 +153,21 @@ export function Sidebar() {
           minHeight: "calc(100vh - var(--bw-nav-height))",
         }}
       >
-        <div
-          style={{
-            fontSize: "var(--bw-fs-xs)",
-            fontWeight: "var(--bw-fw-medium)" as any,
-            color: "var(--bw-content-disabled)",
-            textTransform: "uppercase",
-            letterSpacing: "0.06em",
-            padding: "0 16px",
-            marginBottom: "var(--bw-space-3)",
-          }}
-        >
+        <div style={{ ...sectionLabelStyle, padding: "0 16px", marginBottom: "var(--bw-space-3)" }}>
           Admin Panel
         </div>
         {navContent}
       </aside>
 
       {/* Mobile drawer */}
-      {mobileOpen && (
+      {open && (
         <>
-          <div
-            className="bw-overlay lg:hidden"
-            onClick={() => setMobileOpen(false)}
-          />
+          <div className="bw-overlay lg:hidden" onClick={() => setOpen(false)} />
           <div
             className="lg:hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Admin navigation"
             style={{
               position: "fixed",
               top: 0,
@@ -115,6 +179,7 @@ export function Sidebar() {
               padding: "var(--bw-space-6) var(--bw-space-4)",
               animation: "bw-slide-in-left var(--bw-duration-normal) var(--bw-easing)",
               borderRight: "1px solid var(--bw-border)",
+              overflowY: "auto",
             }}
           >
             <div
@@ -125,28 +190,25 @@ export function Sidebar() {
                 marginBottom: "var(--bw-space-6)",
               }}
             >
-              <span
-                style={{
-                  fontFamily: "var(--bw-font-heading)",
-                  fontWeight: "var(--bw-fw-bold)" as any,
-                  fontSize: "var(--bw-fs-lg)",
-                  color: "var(--bw-content-primary)",
-                }}
-              >
-                Admin
-              </span>
+              <span style={sectionLabelStyle}>Admin Panel</span>
               <button
-                onClick={() => setMobileOpen(false)}
+                onClick={() => setOpen(false)}
                 style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 32,
+                  height: 32,
+                  borderRadius: "var(--bw-radius-circle)",
                   background: "none",
                   border: "none",
                   cursor: "pointer",
                   color: "var(--bw-content-tertiary)",
-                  padding: "4px",
                 }}
+                className="bw-button--ghost"
                 aria-label="Close navigation"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
             {navContent}

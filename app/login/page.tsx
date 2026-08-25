@@ -96,9 +96,7 @@ export default function LoginPage() {
               maxWidth: 400,
             }}
           >
-            Evaluation portal for the lecture panel.
-            <br />
-            Grade proposals, review pitches, shape innovation.
+            Discover ideas. Evaluate potential. Shape the future.
           </p>
         </div>
       </div>

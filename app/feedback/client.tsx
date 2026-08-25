@@ -258,7 +258,7 @@ export function FeedbackPageClient({ currentUserId, existingFeedback }: Props) {
               <h1
                 style={{
                   fontFamily: "var(--bw-font-heading)",
-                  fontSize: "clamp(1.5rem, 5vw, 2rem)",
+                  fontSize: "var(--bw-fs-h2-fluid)",
                   fontWeight: "var(--bw-fw-bold)" as any,
                   lineHeight: "var(--bw-lh-tight)",
                   color: "var(--bw-content-primary)",

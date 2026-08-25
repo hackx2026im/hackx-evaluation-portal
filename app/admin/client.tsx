@@ -28,7 +28,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { LayoutDashboard, Trophy, Clock, FileText, Search, ExternalLink, BarChart, Download, Loader2, Lock, Unlock, FileDown, MessageSquare, Mail } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { LayoutDashboard, Trophy, Clock, FileText, Search, ExternalLink, BarChart, Download, Loader2, Lock, Unlock, FileDown, MessageSquare, Mail, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import type { Proposal, Profile, ProposalAssignment } from "@/lib/types/database";
 
@@ -624,7 +630,7 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
                           <TableRow key={idx}>
                             <TableCell style={{ fontSize: "var(--bw-fs-xs)", padding: "var(--bw-space-2) var(--bw-space-3)" }}>
                               <div style={{ fontWeight: "var(--bw-fw-medium)" as any }}>{c.name}</div>
-                              <div style={{ fontSize: "10px", color: "var(--bw-content-tertiary)" }}>Max: {c.max_score}</div>
+                              <div style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-tertiary)" }}>Max: {c.max_score}</div>
                             </TableCell>
                             {assignedEvaluatorIds.map(evalId => (
                               <TableCell key={evalId} style={{ fontSize: "var(--bw-fs-xs)", textAlign: "center", padding: "var(--bw-space-2) var(--bw-space-3)" }}>
@@ -685,13 +691,13 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
                       </div>
                       {overallNote && (
                         <div style={{ display: "flex", flexDirection: "column", gap: 2, paddingBottom: uniqueCriterionNotes.length > 0 ? "var(--bw-space-2)" : 0, borderBottom: uniqueCriterionNotes.length > 0 ? "1px dashed var(--bw-border)" : "none" }}>
-                          <span style={{ fontSize: "10px", color: "var(--bw-content-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Overall Comment</span>
+                          <span style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>Overall Comment</span>
                           <p style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-primary)", margin: 0, paddingLeft: 4, borderLeft: "2px solid var(--bw-border)", fontStyle: "italic" }}>{overallNote}</p>
                         </div>
                       )}
                       {uniqueCriterionNotes.map((item, i) => (
                         <div key={i} style={{ display: "flex", flexDirection: "column", gap: 2, paddingBottom: i < uniqueCriterionNotes.length - 1 ? "var(--bw-space-2)" : 0, borderBottom: i < uniqueCriterionNotes.length - 1 ? "1px dashed var(--bw-border)" : "none" }}>
-                          <span style={{ fontSize: "10px", color: "var(--bw-content-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>{item.name}</span>
+                          <span style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-tertiary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>{item.name}</span>
                           <p style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-primary)", margin: 0, paddingLeft: 4, borderLeft: "2px solid var(--bw-border)", fontStyle: "italic" }}>{item.note}</p>
                         </div>
                       ))}
@@ -735,14 +741,16 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
       {/* Page heading */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: "var(--bw-space-4)" }}>
         <div>
-          <h2 style={{ fontFamily: "var(--bw-font-heading)", fontSize: "var(--bw-fs-h1)", fontWeight: "var(--bw-fw-bold)" as any, lineHeight: "var(--bw-lh-tight)" }}>
+          <h2 style={{ fontFamily: "var(--bw-font-heading)", fontSize: "var(--bw-fs-h1-fluid)", fontWeight: "var(--bw-fw-bold)" as any, lineHeight: "var(--bw-lh-tight)" }}>
             Dashboard
           </h2>
           <p style={{ marginTop: "var(--bw-space-2)", fontSize: "var(--bw-fs-sm)", color: "var(--bw-content-secondary)" }}>
             Overview of all hackX 11.0 proposals
           </p>
         </div>
-        {/* Header action buttons */}
+        {/* Header action buttons — kept to two: the one live toggle, and
+            every export collapsed under a single menu so the page opens
+            calm instead of a wall of equally-weighted pills. */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--bw-space-3)", alignItems: "center" }}>
           {/* Lock / Unlock toggle */}
           <button
@@ -754,12 +762,12 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
               alignItems: "center",
               gap: "var(--bw-space-2)",
               padding: "10px 18px",
-              background: lockState ? "rgba(245,158,11,0.1)" : "var(--bw-bg-primary)",
-              border: lockState ? "1px solid rgba(245,158,11,0.4)" : "1px solid var(--bw-border)",
+              background: lockState ? "var(--bw-warning-bg)" : "var(--bw-bg-primary)",
+              border: lockState ? "1px solid var(--bw-warning)" : "1px solid var(--bw-border)",
               borderRadius: "var(--bw-radius-pill)",
               fontSize: "var(--bw-fs-sm)",
               fontWeight: "var(--bw-fw-medium)" as any,
-              color: lockState ? "#d97706" : "var(--bw-content-primary)",
+              color: lockState ? "var(--bw-warning)" : "var(--bw-content-primary)",
               cursor: isTogglingLock ? "not-allowed" : "pointer",
               opacity: isTogglingLock ? 0.6 : 1,
               fontFamily: "var(--bw-font-body)",
@@ -773,134 +781,61 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
             {isTogglingLock ? "Updating..." : lockState ? "Unlock Evaluations" : "Lock Evaluations"}
           </button>
 
-          {/* Top 15 CSV download */}
-          <button
-            onClick={handleDownloadTop15}
-            className="bw-button"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "var(--bw-space-2)",
-              padding: "10px 18px",
-              background: "var(--bw-bg-primary)",
-              border: "1px solid var(--bw-border)",
-              borderRadius: "var(--bw-radius-pill)",
-              fontSize: "var(--bw-fs-sm)",
-              fontWeight: "var(--bw-fw-medium)" as any,
-              color: "var(--bw-content-primary)",
-              cursor: "pointer",
-              fontFamily: "var(--bw-font-body)",
-              transition: "all var(--bw-duration-normal)",
-              whiteSpace: "nowrap",
-            }}
-          >
-            <FileDown size={14} />
-            Top 15 CSV
-          </button>
-
-          {/* Evaluator Comments CSV */}
-          <button
-            onClick={handleDownloadComments}
-            className="bw-button"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "var(--bw-space-2)",
-              padding: "10px 18px",
-              background: "var(--bw-bg-primary)",
-              border: "1px solid var(--bw-border)",
-              borderRadius: "var(--bw-radius-pill)",
-              fontSize: "var(--bw-fs-sm)",
-              fontWeight: "var(--bw-fw-medium)" as any,
-              color: "var(--bw-content-primary)",
-              cursor: "pointer",
-              fontFamily: "var(--bw-font-body)",
-              transition: "all var(--bw-duration-normal)",
-              whiteSpace: "nowrap",
-            }}
-          >
-            <MessageSquare size={14} />
-            Comments CSV
-          </button>
-
-          {/* Selected (Top 15) Email CSV */}
-          <button
-            onClick={handleDownloadSelectedCSV}
-            className="bw-button"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "var(--bw-space-2)",
-              padding: "10px 18px",
-              background: "rgba(34,197,94,0.08)",
-              border: "1px solid rgba(34,197,94,0.3)",
-              borderRadius: "var(--bw-radius-pill)",
-              fontSize: "var(--bw-fs-sm)",
-              fontWeight: "var(--bw-fw-medium)" as any,
-              color: "#4ade80",
-              cursor: "pointer",
-              fontFamily: "var(--bw-font-body)",
-              transition: "all var(--bw-duration-normal)",
-              whiteSpace: "nowrap",
-            }}
-          >
-            <Mail size={14} />
-            Selected CSV
-          </button>
-
-          {/* Rejected (Rank 16+) Email CSV */}
-          <button
-            onClick={handleDownloadRejectedCSV}
-            className="bw-button"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "var(--bw-space-2)",
-              padding: "10px 18px",
-              background: "rgba(239,68,68,0.08)",
-              border: "1px solid rgba(239,68,68,0.3)",
-              borderRadius: "var(--bw-radius-pill)",
-              fontSize: "var(--bw-fs-sm)",
-              fontWeight: "var(--bw-fw-medium)" as any,
-              color: "#f87171",
-              cursor: "pointer",
-              fontFamily: "var(--bw-font-body)",
-              transition: "all var(--bw-duration-normal)",
-              whiteSpace: "nowrap",
-            }}
-          >
-            <Mail size={14} />
-            Rejected CSV
-          </button>
-
-          {/* Full JSON backup */}
-          <button
-            onClick={handleDownloadBackup}
-            disabled={isDownloadingBackup}
-            className="bw-button"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "var(--bw-space-2)",
-              padding: "10px 18px",
-              background: "var(--bw-bg-primary)",
-              border: "1px solid var(--bw-border)",
-              borderRadius: "var(--bw-radius-pill)",
-              fontSize: "var(--bw-fs-sm)",
-              fontWeight: "var(--bw-fw-medium)" as any,
-              color: "var(--bw-content-primary)",
-              cursor: isDownloadingBackup ? "not-allowed" : "pointer",
-              opacity: isDownloadingBackup ? 0.6 : 1,
-              fontFamily: "var(--bw-font-body)",
-              transition: "all var(--bw-duration-normal)",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {isDownloadingBackup
-              ? <Loader2 size={14} style={{ animation: "spin 1s linear infinite" }} />
-              : <Download size={14} />}
-            {isDownloadingBackup ? "Preparing..." : "Download Backup"}
-          </button>
+          {/* Exports — Top 15 CSV, Comments CSV, Selected/Rejected email CSVs, full backup */}
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <button
+                disabled={isDownloadingBackup}
+                className="bw-button"
+                style={{
+                  position: "relative",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "var(--bw-space-2)",
+                  padding: "10px 18px",
+                  background: "var(--bw-bg-primary)",
+                  border: "1px solid var(--bw-border)",
+                  borderRadius: "var(--bw-radius-pill)",
+                  fontSize: "var(--bw-fs-sm)",
+                  fontWeight: "var(--bw-fw-medium)" as any,
+                  color: "var(--bw-content-primary)",
+                  cursor: isDownloadingBackup ? "not-allowed" : "pointer",
+                  opacity: isDownloadingBackup ? 0.6 : 1,
+                  fontFamily: "var(--bw-font-body)",
+                  transition: "all var(--bw-duration-normal)",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {isDownloadingBackup
+                  ? <Loader2 size={14} style={{ animation: "spin 1s linear infinite" }} />
+                  : <Download size={14} />}
+                {isDownloadingBackup ? "Preparing..." : "Export"}
+                <ChevronDown size={14} style={{ color: "var(--bw-content-tertiary)" }} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={handleDownloadTop15}>
+                <FileDown size={14} />
+                Top 15 CSV
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDownloadComments}>
+                <MessageSquare size={14} />
+                Evaluator Comments CSV
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDownloadSelectedCSV}>
+                <Mail size={14} />
+                Selected (Top 15) Emails
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDownloadRejectedCSV}>
+                <Mail size={14} />
+                Rejected (Rank 16+) Emails
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDownloadBackup} disabled={isDownloadingBackup}>
+                <Download size={14} />
+                Full JSON Backup
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -946,12 +881,11 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
           </CardHeader>
           <CardContent style={{ padding: "var(--bw-space-0) var(--bw-space-6) var(--bw-space-6)" }}>
             <div style={{ overflowX: "auto", margin: "0 calc(var(--bw-space-6) * -1)" }}>
-              <Table style={{ minWidth: 800 }}>
+              <Table style={{ minWidth: 720 }}>
                 <TableHeader>
                   <TableRow>
                     <TableHead style={{ paddingLeft: "var(--bw-space-6)" }}>Team</TableHead>
-                    <TableHead>Evaluators</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>Assigned To</TableHead>
                     <TableHead style={{ textAlign: "right" }}>Total</TableHead>
                     <TableHead style={{ textAlign: "right", paddingRight: "var(--bw-space-6)" }}>Actions</TableHead>
                   </TableRow>
@@ -959,7 +893,7 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
                 <TableBody>
                   {filteredProposals.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={5} style={{ height: 96, textAlign: "center", color: "var(--bw-content-disabled)" }}>
+                      <TableCell colSpan={4} style={{ height: 96, textAlign: "center", color: "var(--bw-content-disabled)" }}>
                         No proposals found.
                       </TableCell>
                     </TableRow>
@@ -968,6 +902,7 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
                       const assigneeIds = assignments
                         .filter((a) => a.proposal_id === proposal.id)
                         .map((a) => a.evaluator_id);
+                      const criteriaData = (breakdownData[proposal.id] || []) as any[];
 
                       return (
                         <TableRow key={proposal.id}>
@@ -976,34 +911,25 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
                             <div style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-tertiary)" }}>{proposal.product_name}</div>
                           </TableCell>
                           <TableCell>
-                            <div style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-2)" }}>
-                              {assigneeIds.length > 0 ? (
-                                assigneeIds.map((evalId) => (
-                                  <div key={evalId} style={{ height: 24, display: "flex", alignItems: "center" }}>
-                                    <span style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-secondary)" }}>
-                                      {evaluatorMap.get(evalId) || "Unknown"}
-                                    </span>
-                                  </div>
-                                ))
-                              ) : (
-                                <span style={{ fontSize: "var(--bw-fs-sm)", color: "var(--bw-content-disabled)", fontStyle: "italic" }}>Unassigned</span>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-2)" }}>
-                              {assigneeIds.map((evalId) => {
-                                const criteriaData = (breakdownData[proposal.id] || []) as any[];
-                                const hasGraded = criteriaData.some(c => c.scores[evalId] !== undefined);
-                                return (
-                                  <div key={evalId} style={{ height: 24, display: "flex", alignItems: "center" }}>
-                                    <Badge variant={hasGraded ? "positive" : "secondary"}>
-                                      {hasGraded ? "Graded" : "Pending"}
-                                    </Badge>
-                                  </div>
-                                );
-                              })}
-                            </div>
+                            {assigneeIds.length > 0 ? (
+                              <div style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-2)" }}>
+                                {assigneeIds.map((evalId) => {
+                                  const hasGraded = criteriaData.some(c => c.scores[evalId] !== undefined);
+                                  return (
+                                    <div key={evalId} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "var(--bw-space-3)" }}>
+                                      <span style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-secondary)" }}>
+                                        {evaluatorMap.get(evalId) || "Unknown"}
+                                      </span>
+                                      <Badge variant={hasGraded ? "positive" : "secondary"}>
+                                        {hasGraded ? "Graded" : "Pending"}
+                                      </Badge>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <span style={{ fontSize: "var(--bw-fs-sm)", color: "var(--bw-content-disabled)", fontStyle: "italic" }}>Unassigned</span>
+                            )}
                           </TableCell>
                           <TableCell style={{ textAlign: "right", fontWeight: "var(--bw-fw-bold)" as any }}>
                             {proposal.is_graded ? `${proposal.total_score}` : "—"}
@@ -1063,7 +989,7 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
-                              fontSize: "10px",
+                              fontSize: "var(--bw-fs-xs)",
                               fontWeight: "var(--bw-fw-bold)" as any,
                               flexShrink: 0,
                             }}
@@ -1075,7 +1001,7 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
                             {evaluatedByList.length > 0 && (
                               <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 2 }}>
                                 {evaluatedByList.map((name, i) => (
-                                  <Badge key={i} variant="secondary" style={{ fontSize: "10px", padding: "0px 6px", height: 16 }}>{name}</Badge>
+                                  <Badge key={i} variant="secondary" style={{ fontSize: "var(--bw-fs-xs)", padding: "0px 6px", height: 18 }}>{name}</Badge>
                                 ))}
                               </div>
                             )}

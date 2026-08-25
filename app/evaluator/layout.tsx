@@ -41,6 +41,8 @@ export default async function EvaluatorLayout({
         }}
         className="sm:px-6 md:px-8"
       >
+        {/* No container here: the evaluate route is a full-width document
+            workspace and sets its own width. Dashboard pages opt in. */}
         {children}
       </main>
     </div>
