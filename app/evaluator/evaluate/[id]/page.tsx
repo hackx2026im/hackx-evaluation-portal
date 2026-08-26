@@ -63,10 +63,7 @@ export default async function EvaluationPage({ params }: PageProps) {
     redirect("/evaluator?error=not_assigned");
   }
 
-  // DEADLINE LOCK GUARD: evaluators cannot edit after lock; admins bypass
-  if (evaluationsLocked && !isAdmin) {
-    redirect("/evaluator?error=locked");
-  }
+  // DEADLINE LOCK GUARD: UI handles the read-only locked state, no redirect needed here.
 
   // Sort criteria within each section
   const sortedSections = (sections ?? []).map((section) => ({

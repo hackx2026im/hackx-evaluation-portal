@@ -89,6 +89,23 @@ export async function GET(request: NextRequest) {
       downloadUrl = rawUrl;
     }
 
+    // SSRF Protection: strictly allowlist hosts
+    let targetUrl: URL;
+    try {
+      targetUrl = new URL(downloadUrl);
+    } catch {
+      return NextResponse.json({ error: "Invalid URL format" }, { status: 400 });
+    }
+
+    const ALLOWED_HOSTS = ["drive.google.com", "docs.google.com"];
+    if (!ALLOWED_HOSTS.includes(targetUrl.hostname)) {
+      console.error(`[PDF proxy] SSRF attempt blocked for host: ${targetUrl.hostname}`);
+      return NextResponse.json(
+        { error: "Only Google Drive/Docs links are permitted for security reasons." },
+        { status: 403 }
+      );
+    }
+
     // 5. Fetch the PDF server-side
     const pdfResponse = await fetch(downloadUrl, {
       headers: {

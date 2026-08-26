@@ -135,7 +135,7 @@ export function EvaluationViewClient({
       });
 
       const bleedThroughText = Object.entries(noteFrequency)
-        .find(([, count]) => count > 1)?.[0];
+        .find(([text, count]) => count > 1 && text.trim().length > 10)?.[0];
 
       if (bleedThroughText) {
         setGlobalNotes(bleedThroughText);
@@ -241,7 +241,7 @@ export function EvaluationViewClient({
       supabase
         .from("evaluation_overall_notes")
         .upsert(
-          { proposal_id: proposal.id, notes: globalNotes, updated_at: new Date().toISOString() },
+          { proposal_id: proposal.id, evaluator_id: currentUserId, notes: globalNotes, updated_at: new Date().toISOString() },
           { onConflict: "proposal_id,evaluator_id" }
         )
         .then(({ error }) => {
