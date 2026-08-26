@@ -42,6 +42,12 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
+  // Onboarding preview: renders the guide in isolation with no database access.
+  // Non-production only, so it can never be reached on a deployed build.
+  if (pathname === "/onboard-preview" && process.env.NODE_ENV !== "production") {
+    return supabaseResponse;
+  }
+
   // Not logged in → redirect to login (except if already on login page)
   if (!user && pathname !== "/login" && pathname !== "/reset-password") {
     const url = request.nextUrl.clone();

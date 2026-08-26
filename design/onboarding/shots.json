@@ -1,69 +1,48 @@
 {
-  "_comment": "Frame spec for the onboarding slide imagery. Raw screenshots go in design/onboarding/raw/ and are composited into public/onboarding/ by scripts/build_onboarding_frames.py. Tune `crop` per slide once the real screenshots land — it is [x, y, width, height] in source pixels, or null to use the whole image.",
+  "_comment": "Frame spec for the onboarding slide imagery. Raw screenshots live in design/onboarding/raw/ and are composited into public/onboarding/ by scripts/build_onboarding_frames.py. `crop` is [x, y, width, height] in source pixels, or null for the whole image. Slides with `passthrough` reuse an existing asset as-is and are not rebuilt.",
+  "_panelNote": "The modal paints the image panel the same mint (background, below) and uses object-contain, so the frame edge is invisible and the screenshot is never cropped.",
 
   "canvas": { "width": 1080, "height": 1350 },
-  "background": "#ededed",
-  "margin": 72,
-  "cardRadius": 22,
-  "cardBorder": "#d6d6d6",
-  "shadow": { "blur": 40, "offsetY": 18, "opacity": 0.3 },
+  "background": "#92dfa8",
+  "margin": 80,
+  "cardRadius": 18,
+  "cardBorder": "#7cc891",
+  "shadow": { "blur": 44, "offsetY": 20, "opacity": 0.22 },
 
   "slides": [
     {
-      "n": 1,
-      "source": "slide1.png",
-      "crop": null,
-      "shot": "Login screen (dark), full window.",
-      "label": "Welcome"
+      "key": "welcome",
+      "passthrough": "onboard1.gif",
+      "note": "Existing mint-green robot animation, kept as-is per request."
     },
     {
-      "n": 2,
-      "source": "slide2.png",
-      "crop": null,
-      "shot": "Evaluator dashboard, full page. Crop will target the three stat cards plus the top of My Assignments.",
-      "label": "Dashboard"
+      "key": "dashboard",
+      "source": "dashboard.png",
+      "crop": [118, 71, 2924, 1209],
+      "note": "Full evaluator dashboard window including browser chrome; only the blank area below the assignments table is trimmed."
     },
     {
-      "n": 3,
-      "source": "slide3.png",
+      "key": "assignments",
+      "source": "dashboard-zoom.jpeg",
       "crop": null,
-      "shot": "Evaluator dashboard. Crop will target the My Assignments card on its own, showing a few rows and the Evaluate button.",
-      "label": "My Assignments"
+      "note": "Zoomed dashboard view — heading, stat cards and the assignments table. Used as captured."
     },
     {
-      "n": 4,
-      "source": "slide4.png",
-      "crop": null,
-      "shot": "Evaluator dashboard. Crop will target the All Proposals card, showing the Marks and Breakdown columns.",
-      "label": "All Proposals"
+      "key": "all-proposals",
+      "source": "assignments.jpeg",
+      "crop": [8, 4, 1264, 470],
+      "note": "Cropped to the card on its own — rows, status chips and the Evaluate / Details actions."
     },
     {
-      "n": 5,
-      "source": "slide5.png",
-      "crop": null,
-      "shot": "Evaluate page for any proposal — the split view with the PDF on the left and the rubric scoring panel on the right.",
-      "label": "Scoring"
+      "key": "evaluation",
+      "source": "evaluation.jpeg",
+      "crop": [45, 33, 1192, 744],
+      "note": "Split evaluation view: PDF on the left, single 100-mark rubric with grade bands on the right."
     },
     {
-      "n": 6,
-      "source": "slide6.png",
-      "crop": null,
-      "shot": "Evaluate page with a PDF highlight/annotation open, or the video tab showing a timestamped comment.",
-      "label": "Notes & annotations"
-    },
-    {
-      "n": 7,
-      "source": "slide7.png",
-      "crop": null,
-      "shot": "Evaluator dashboard Top 15 Teams panel, or a grade breakdown dialog showing per-criterion scores.",
-      "label": "Final rankings"
-    },
-    {
-      "n": 8,
-      "source": "slide8.png",
-      "crop": null,
-      "shot": "The Change Password dialog, opened from the avatar menu in the navbar.",
-      "label": "Security"
+      "key": "security",
+      "passthrough": "onboard7.gif",
+      "note": "Existing mint-green shield animation from the old deck's security slide — brand-agnostic, so it carries over."
     }
   ]
 }

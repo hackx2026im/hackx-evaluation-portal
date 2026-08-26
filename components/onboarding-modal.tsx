@@ -18,100 +18,98 @@ interface Slide {
   eyebrow: string;
   heading: string;
   body: React.ReactNode;
+  /* Asset under /public/onboarding. Built by scripts/build_onboarding_frames.py
+     from design/onboarding/shots.json, except the two reused animations. */
+  image: string;
 }
+
+/* Every slide asset sits on this mint field, including the two original GIFs.
+   The image panel is painted the same colour so object-contain letterboxing
+   is invisible and no screenshot ever gets cropped. */
+const PANEL_BG = "#92dfa8";
 
 // ─── Slide definitions ────────────────────────────────────────────────────────
 
-/* Copy lives in content.md (hackX 11.0 draft, v1) — keep the two in sync. */
+/* Copy lives in content.md (hackX 11.0, v2) — keep the two in sync. */
 const SLIDES: Slide[] = [
   {
-    eyebrow: "HACKX 11.0",
-    heading: "Welcome aboard.",
+    eyebrow: "hackX 11.0",
+    heading: "Welcome.",
+    image: "/onboarding/onboard1.gif",
     body: (
       <div className="space-y-4">
         <p>
-          A short walkthrough of the evaluation portal — your dashboard, the
-          proposals assigned to you, how scoring works, and how final rankings
-          are decided.
-        </p>
-        <p
-          style={{
-            fontSize: "var(--bw-fs-sm)",
-            color: "var(--bw-content-secondary)",
-          }}
-        >
-          Under two minutes. You can reopen this guide at any time from your
-          profile menu.
+          This is a quick walkthrough of the evaluation platform. It covers your
+          dashboard, your assignments, how to submit evaluations, and how final
+          rankings are calculated. Takes under two minutes.
         </p>
       </div>
     ),
   },
   {
-    eyebrow: "YOUR DASHBOARD",
-    heading: "Everything at a glance.",
+    eyebrow: "DASHBOARD",
+    heading: "Your evaluation overview.",
+    image: "/onboarding/slide-dashboard.webp",
     body: (
       <div className="space-y-4">
         <p>
-          Three cards track your progress: how many proposals are assigned to
-          you, how many are still ungraded, and how many days remain before the
-          deadline.
-        </p>
-        <p>
-          The Top 15 panel is the live leaderboard, built from combined averages
-          across the whole panel. It updates on its own as evaluations come in.
+          The dashboard shows your total assigned proposals, how many are still
+          ungraded, and the days remaining until the deadline.
         </p>
       </div>
     ),
   },
   {
     eyebrow: "MY ASSIGNMENTS",
-    heading: "Your work queue.",
+    heading: "Proposals assigned to you.",
+    image: "/onboarding/slide-assignments.webp",
     body: (
       <div className="space-y-4">
         <p>
-          Every proposal you have been asked to review sits here, with the team
-          name, direct links to the proposal document and pitch video, and its
-          current status.
+          This table lists every proposal you have been asked to evaluate. Each
+          row shows the team, direct links to the proposal document and
+          submission, and the current status.
         </p>
         <p>
-          Evaluate opens the scoring workspace. Flip on Show Pending to hide
-          everything you have already graded.
+          When a proposal is ready, the Evaluate button becomes your entry
+          point. Use the Show Pending toggle to filter down to ungraded
+          submissions only.
         </p>
       </div>
     ),
   },
   {
     eyebrow: "ALL PROPOSALS",
-    heading: "See the whole field.",
+    heading: "Full visibility across all submissions.",
+    image: "/onboarding/slide-all-proposals.webp",
     body: (
       <div className="space-y-4">
         <p>
-          All Proposals is a read-only view of every team in the competition —
-          who is evaluating what, and where each submission stands.
+          All Proposals gives you a read-only view of every team in the
+          competition. You can see assigned evaluators and grading status across
+          the full pool.
         </p>
         <p>
-          You can open any graded team&apos;s breakdown to see how the marks were
-          distributed. Evaluate only appears on proposals assigned to you.
+          The Evaluate action only appears for proposals directly assigned to
+          you. Use the Graded-only toggle or the All Evaluators filter to narrow
+          the view.
         </p>
       </div>
     ),
   },
   {
-    eyebrow: "SCORING",
-    heading: "Document and rubric, side by side.",
+    eyebrow: "SUBMITTING AN EVALUATION",
+    heading: "Rubric-based scoring system.",
+    image: "/onboarding/slide-evaluation.webp",
     body: (
       <div className="space-y-4">
         <p>
-          Opening a proposal puts the submission on the left and the rubric on
-          the right. Switch between the Document and Video tabs without losing
-          your place.
+          Opening a proposal loads the PDF viewer alongside the scoring panel. A
+          single rubric is used to evaluate both the proposal and pitch video,
+          with each criterion accompanied by a description to guide your
+          evaluation.
         </p>
-        <p>
-          Scoring is split into two sections — Proposal (70 marks) and Pitch
-          Video (30 marks). Each criterion lists its grade bands, so you can see
-          what range matches the performance level you have in mind.
-        </p>
-        <div className="flex flex-wrap gap-2" style={{ margin: "var(--bw-space-4) 0 0" }}>
+        <div className="flex flex-wrap gap-2" style={{ margin: "var(--bw-space-4) 0" }}>
           {["Excellent", "Good", "Developing", "Weak"].map((label) => (
             <span
               key={label}
@@ -129,72 +127,23 @@ const SLIDES: Slide[] = [
             </span>
           ))}
         </div>
-      </div>
-    ),
-  },
-  {
-    eyebrow: "NOTES & ANNOTATIONS",
-    heading: "Capture your reasoning as you read.",
-    body: (
-      <div className="space-y-4">
         <p>
-          Highlight a passage in the proposal to pin a note to it, or drop a
-          timestamped comment while the pitch video plays. Your notes stay
-          attached to the exact spot that prompted them.
-        </p>
-        <p>
-          There is also an overall comment box for the summary judgement. Notes
-          are visible to organisers and are what make a score defensible later.
-        </p>
-      </div>
-    ),
-  },
-  {
-    eyebrow: "FINAL RANKINGS",
-    heading: "Combined averages decide the outcome.",
-    body: (
-      <div className="space-y-4">
-        <p>
-          Each proposal is reviewed by two evaluators, and the final score is the
-          average of both totals. Individual marks are never shown across the
-          panel — only the combined average reaches the leaderboard.
-        </p>
-        <div
-          className="flex gap-3 rounded-xl"
-          style={{
-            padding: "var(--bw-space-4)",
-            background: "var(--bw-warning-bg)",
-            border: "1px solid var(--bw-warning)",
-            color: "var(--bw-warning)",
-          }}
-        >
-          <span className="text-xl leading-none shrink-0 mt-0.5">⚠️</span>
-          <p className="text-[14px] leading-snug font-medium">
-            Rankings move as the remaining evaluations land. Standings are final
-            only once organisers lock evaluations.
-          </p>
-        </div>
-        <p
-          style={{
-            fontSize: "var(--bw-fs-sm)",
-            lineHeight: "var(--bw-lh-relaxed)",
-            color: "var(--bw-content-secondary)",
-          }}
-        >
-          If something looks off — an outlier, a borderline team, a scoring
-          mismatch — talk to your co-evaluator and settle it before the lock.
+          Enter the mark directly into the field for each criterion. The grade
+          band labels show you the mark range corresponding to each performance
+          level.
         </p>
       </div>
     ),
   },
   {
     eyebrow: "SECURITY",
-    heading: "Set your own password.",
+    heading: "Change your password.",
+    image: "/onboarding/onboard7.gif",
     body: (
       <div className="space-y-4">
         <p>
-          Your account was issued with a temporary password. Replacing it now
-          keeps the evaluation record tied to you and only you.
+          To ensure the integrity of the evaluation process, we recommend
+          updating your temporary password to a secure, private one.
         </p>
         <p
           style={{
@@ -202,7 +151,8 @@ const SLIDES: Slide[] = [
             color: "var(--bw-content-secondary)",
           }}
         >
-          You can skip this and do it later from your profile menu.
+          You can skip this step and change it later from your profile settings
+          at any time.
         </p>
       </div>
     ),
@@ -344,12 +294,13 @@ export function OnboardingModal({
 
         {/*
           ── Image panel ──
-          Visible on mobile and desktop. Fixed smaller height on mobile.
+          Painted the same mint as every slide asset, so object-contain
+          letterboxing is invisible and no screenshot is ever cropped.
         */}
         <div
-          className="flex w-full h-[200px] md:h-auto md:w-[40%] items-center justify-center relative overflow-hidden shrink-0"
+          className="flex w-full h-[220px] md:h-auto md:w-[40%] items-center justify-center relative overflow-hidden shrink-0"
           style={{
-            background: "var(--bw-bg-secondary)",
+            background: PANEL_BG,
             borderRadius: "var(--bw-radius-md) var(--bw-radius-md) 0 0",
             borderBottom: "1px solid var(--bw-border)",
           }}
@@ -360,7 +311,7 @@ export function OnboardingModal({
                 fontSize: "var(--bw-fs-xs)",
                 fontWeight: "var(--bw-fw-bold)",
                 letterSpacing: "0.05em",
-                color: "var(--bw-content-disabled)",
+                color: "rgba(0,0,0,0.45)",
                 textTransform: "uppercase",
               }}
             >
@@ -369,10 +320,10 @@ export function OnboardingModal({
           ) : (
             <img
               key={`slide-img-${step}`}
-              src={`/onboarding/slide${n}.webp`}
+              src={slide.image}
               alt=""
               onError={() => setImgFailed(true)}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           )}
         </div>
