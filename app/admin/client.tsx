@@ -114,14 +114,14 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
     }
   };
 
-  const handleDownloadTop15 = () => {
-    const top15 = proposals
+  const handleDownloadTop25 = () => {
+    const top25 = proposals
       .filter((p) => p.is_graded)
       .sort((a, b) => b.total_score - a.total_score)
-      .slice(0, 15);
+      .slice(0, 25);
 
     const headers = ["Rank", "Team Name", "Product Name", "Score", "Proposal Link", "Pitch Video Link"];
-    const rows = top15.map((p, i) => [
+    const rows = top25.map((p, i) => [
       i + 1,
       `"${p.team_name.replace(/"/g, '""')}"`,
       `"${p.product_name.replace(/"/g, '""')}"`,
@@ -135,12 +135,12 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `hackX-2026-top15.csv`;
+    a.download = `hackX-2026-top25.csv`;
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
-    toast.success("Top 15 CSV downloaded");
+    toast.success("Top 25 CSV downloaded");
   };
 
   const handleDownloadComments = () => {
@@ -399,7 +399,7 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
     return [headerRow, ...rows].join("\n");
   };
 
-  // ── Download Selected (Top 15) ────────────────────────────────────────────
+  // ── Download Selected (Top 25) ────────────────────────────────────────────
   const handleDownloadSelectedCSV = () => {
     if (rubricSections.length === 0) {
       toast.error("Rubric data not loaded — please refresh the page.");
@@ -411,15 +411,15 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
       .sort((a, b) =>
         b.total_score - a.total_score || a.team_name.localeCompare(b.team_name)
       );
-    const selected = graded.slice(0, 15);
+    const selected = graded.slice(0, 25);
     if (selected.length === 0) { toast.info("No graded proposals to export."); return; }
 
-    // Warn if there is a tie straddling the rank-15/16 boundary
+    // Warn if there is a tie straddling the rank-25/26 boundary
     const lastSelected = selected[selected.length - 1];
-    const firstRejected = graded[15];
+    const firstRejected = graded[25];
     if (firstRejected && lastSelected.total_score === firstRejected.total_score) {
       toast.warning(
-        `⚠️ Tie at rank 15/16: "${lastSelected.team_name}" and "${firstRejected.team_name}" both scored ${lastSelected.total_score}. Teams are split alphabetically — review manually.`,
+        `⚠️ Tie at rank 25/26: "${lastSelected.team_name}" and "${firstRejected.team_name}" both scored ${lastSelected.total_score}. Teams are split alphabetically — review manually.`,
         { duration: 8000 }
       );
     }
@@ -429,7 +429,7 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `hackX-2026-selected-top15-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `hackX-2026-selected-top25-${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(a); a.click(); a.remove();
     URL.revokeObjectURL(url);
     toast.success(`Selected CSV downloaded — ${selected.length} proposals`);
@@ -447,7 +447,7 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
       .sort((a, b) =>
         b.total_score - a.total_score || a.team_name.localeCompare(b.team_name)
       );
-    const rejected = graded.slice(15);
+    const rejected = graded.slice(25);
     if (rejected.length === 0) { toast.info("No non-selected proposals to export."); return; }
 
     // Warn if tie at boundary (mirror of selected handler)
@@ -455,7 +455,7 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
     const firstRejected = rejected[0];
     if (lastSelected && firstRejected && lastSelected.total_score === firstRejected.total_score) {
       toast.warning(
-        `⚠️ Tie at rank 15/16: "${lastSelected.team_name}" and "${firstRejected.team_name}" both scored ${lastSelected.total_score}. Teams are split alphabetically — review manually.`,
+        `⚠️ Tie at rank 25/26: "${lastSelected.team_name}" and "${firstRejected.team_name}" both scored ${lastSelected.total_score}. Teams are split alphabetically — review manually.`,
         { duration: 8000 }
       );
     }
@@ -509,7 +509,7 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
     return proposals
       .filter((p) => p.is_graded)
       .sort((a, b) => b.total_score - a.total_score)
-      .slice(0, 15);
+      .slice(0, 25);
   }, [proposals]);
 
   const handleDeleteProposal = async () => {
@@ -781,7 +781,7 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
             {isTogglingLock ? "Updating..." : lockState ? "Unlock Evaluations" : "Lock Evaluations"}
           </button>
 
-          {/* Exports — Top 15 CSV, Comments CSV, Selected/Rejected email CSVs, full backup */}
+          {/* Exports — Top 25 CSV, Comments CSV, Selected/Rejected email CSVs, full backup */}
           <DropdownMenu>
             <DropdownMenuTrigger>
               <button
@@ -814,9 +814,9 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={handleDownloadTop15}>
+              <DropdownMenuItem onClick={handleDownloadTop25}>
                 <FileDown size={14} />
-                Top 15 CSV
+                Top 25 CSV
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleDownloadComments}>
                 <MessageSquare size={14} />
@@ -824,7 +824,7 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleDownloadSelectedCSV}>
                 <Mail size={14} />
-                Selected (Top 15) Emails
+                Selected (Top 25) Emails
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleDownloadRejectedCSV}>
                 <Mail size={14} />
@@ -957,13 +957,13 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
           </CardContent>
         </Card>
 
-        {/* Top 15 Leaderboard */}
+        {/* Top 25 Leaderboard */}
         <div style={{ position: "sticky", top: "calc(var(--bw-nav-height) + var(--bw-space-6))", alignSelf: "start", maxHeight: "calc(100vh - var(--bw-nav-height) - var(--bw-space-12))", overflowY: "auto" }} className="hidden xl:block">
           <Card variant="flat" style={{ display: "flex", flexDirection: "column" }}>
             <CardHeader style={{ padding: "var(--bw-space-6)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "var(--bw-space-2)" }}>
                 <Trophy size={18} style={{ color: "var(--bw-warning)" }} />
-                <CardTitle style={{ fontSize: "var(--bw-fs-h4)" }}>Top 15 Teams</CardTitle>
+                <CardTitle style={{ fontSize: "var(--bw-fs-h4)" }}>Top 25 Teams</CardTitle>
               </div>
             </CardHeader>
             <CardContent style={{ padding: "0 var(--bw-space-6) var(--bw-space-6)" }}>
