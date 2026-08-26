@@ -1,14 +1,19 @@
 {
-  "_comment": "Frame spec for the onboarding slide imagery. Raw screenshots live in design/onboarding/raw/ and are composited into public/onboarding/ by scripts/build_onboarding_frames.py. `crop` is [x, y, width, height] in source pixels, or null for the whole image. Slides with `passthrough` reuse an existing asset as-is and are not rebuilt.",
+  "_comment": "Frame spec for the onboarding slide imagery. Raw screenshots live in design/onboarding/raw/ and are composited into public/onboarding/ by scripts/build_onboarding_frames.py. `crop` is [x, y, width, height] in source pixels, or null to use the whole image. All slides currently use the full screenshot (no cropping). Slides with `passthrough` reuse an existing asset as-is and are not rebuilt.",
   "_panelNote": "The modal paints the image panel the same mint (background, below) and uses object-contain, so the frame edge is invisible and the screenshot is never cropped.",
-
-  "canvas": { "width": 1080, "height": 1350 },
+  "canvas": {
+    "width": 1080,
+    "height": 1350
+  },
   "background": "#92dfa8",
   "margin": 80,
   "cardRadius": 18,
   "cardBorder": "#7cc891",
-  "shadow": { "blur": 44, "offsetY": 20, "opacity": 0.22 },
-
+  "shadow": {
+    "blur": 44,
+    "offsetY": 20,
+    "opacity": 0.22
+  },
   "slides": [
     {
       "key": "welcome",
@@ -18,31 +23,31 @@
     {
       "key": "dashboard",
       "source": "dashboard.png",
-      "crop": [118, 71, 2924, 1209],
-      "note": "Full evaluator dashboard window including browser chrome; only the blank area below the assignments table is trimmed."
+      "crop": null,
+      "note": "Full evaluator dashboard window, used exactly as captured."
     },
     {
       "key": "assignments",
       "source": "dashboard-zoom.jpeg",
       "crop": null,
-      "note": "Zoomed dashboard view — heading, stat cards and the assignments table. Used as captured."
+      "note": "Zoomed dashboard view \u2014 heading, stat cards and the assignments table. Used exactly as captured."
     },
     {
       "key": "all-proposals",
       "source": "assignments.jpeg",
-      "crop": [8, 4, 1264, 470],
-      "note": "Cropped to the card on its own — rows, status chips and the Evaluate / Details actions."
+      "crop": null,
+      "note": "My Assignments card view, used exactly as captured."
     },
     {
       "key": "evaluation",
       "source": "evaluation.jpeg",
-      "crop": [45, 33, 1192, 744],
-      "note": "Split evaluation view: PDF on the left, single 100-mark rubric with grade bands on the right."
+      "crop": null,
+      "note": "Split evaluation view \u2014 PDF left, rubric right. Used exactly as captured."
     },
     {
       "key": "security",
       "passthrough": "onboard7.gif",
-      "note": "Existing mint-green shield animation from the old deck's security slide — brand-agnostic, so it carries over."
+      "note": "Existing mint-green shield animation from the old deck's security slide \u2014 brand-agnostic, so it carries over."
     }
   ]
 }
