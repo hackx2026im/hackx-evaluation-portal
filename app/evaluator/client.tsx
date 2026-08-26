@@ -68,6 +68,7 @@ interface Props {
   feedbackRecord?: EvaluatorFeedback | null;
   hasSeenFeedbackPrompt?: boolean;
   evaluationsLocked?: boolean;
+  maxPossibleScore?: number;
 }
 
 export function EvaluatorDashboardClient({
@@ -84,6 +85,7 @@ export function EvaluatorDashboardClient({
   feedbackRecord = null,
   hasSeenFeedbackPrompt = false,
   evaluationsLocked = false,
+  maxPossibleScore = 100,
 }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -217,7 +219,7 @@ export function EvaluatorDashboardClient({
                       <span style={{ fontSize: "var(--bw-fs-sm)", fontWeight: "var(--bw-fw-medium)" as any }}>You</span>
                     </div>
                     {isGradedByMe && myScore ? (
-                      <Badge variant="positive">Graded ({myScore.total}/100)</Badge>
+                      <Badge variant="positive">Graded ({myScore.total}/{maxPossibleScore})</Badge>
                     ) : (
                       <Badge variant="secondary">Pending</Badge>
                     )}
@@ -248,7 +250,7 @@ export function EvaluatorDashboardClient({
                   breakdownData[proposal.id].forEach(c => {
                     if (c.notes?.trim()) noteFreq[c.notes] = (noteFreq[c.notes] ?? 0) + 1;
                   });
-                  const bleedText = Object.entries(noteFreq).find(([, cnt]) => cnt > 1)?.[0];
+                  const bleedText = Object.entries(noteFreq).find(([txt, cnt]) => cnt > 1 && txt.trim().length > 10)?.[0];
 
                   // Overall comment: prefer dedicated table, fall back to bleed-through rescue
                   const overallComment = myOverallNotes[proposal.id] || bleedText || "";

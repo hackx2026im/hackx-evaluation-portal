@@ -3,6 +3,7 @@
 import * as React from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { toast } from "sonner";
 import { Loader2, ArrowRight, Eye, EyeOff } from "lucide-react";
 
@@ -247,6 +248,11 @@ export default function LoginPage() {
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
+              </div>
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "var(--bw-space-2)" }}>
+                <Link href="/reset-password" style={{ fontSize: "var(--bw-fs-sm)", color: "var(--bw-content-secondary)", textDecoration: "none", transition: "color 0.2s" }} onMouseOver={(e) => e.currentTarget.style.color = "var(--bw-content-primary)"} onMouseOut={(e) => e.currentTarget.style.color = "var(--bw-content-secondary)"}>
+                  Forgot password?
+                </Link>
               </div>
             </div>
 

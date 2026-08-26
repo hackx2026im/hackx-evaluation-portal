@@ -19,7 +19,8 @@ export default async function EvaluatorDashboardPage() {
     { data: settings },
     { data: myOverallNotesRows },
     { data: feedbackRow },
-    { data: lockSetting }
+    { data: lockSetting },
+    { data: rubricCriteria }
   ] = await Promise.all([
     supabase
       .from("proposals")
@@ -64,7 +65,12 @@ export default async function EvaluatorDashboardPage() {
       .select("value")
       .eq("key", "evaluations_locked")
       .single(),
+    supabase
+      .from("rubric_criteria")
+      .select("max_score"),
   ]);
+
+  const maxPossibleScore = (rubricCriteria ?? []).reduce((acc, curr) => acc + (curr.max_score || 0), 0) || 100;
 
   const evaluationsLocked = (() => {
     const raw = (lockSetting as any)?.value;
@@ -149,6 +155,7 @@ export default async function EvaluatorDashboardPage() {
       feedbackRecord={feedbackRow ?? null}
       hasSeenFeedbackPrompt={feedbackRow?.has_seen_prompt ?? false}
       evaluationsLocked={evaluationsLocked}
+      maxPossibleScore={maxPossibleScore}
     />
   );
 }

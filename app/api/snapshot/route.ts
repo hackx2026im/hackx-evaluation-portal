@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       proposal_id: proposalId,
       team_name: teamName ?? "",
       evaluator: evaluatorName ?? "",
-      evaluator_id: evaluatorId ?? user.id,
+      evaluator_id: user.id, // Strictly use session user ID, do not trust client payload
       timestamp: new Date().toISOString(),
       evaluation_data: evaluationData,
     };
