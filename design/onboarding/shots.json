@@ -1,0 +1,69 @@
+{
+  "_comment": "Frame spec for the onboarding slide imagery. Raw screenshots go in design/onboarding/raw/ and are composited into public/onboarding/ by scripts/build_onboarding_frames.py. Tune `crop` per slide once the real screenshots land — it is [x, y, width, height] in source pixels, or null to use the whole image.",
+
+  "canvas": { "width": 1080, "height": 1350 },
+  "background": "#ededed",
+  "margin": 72,
+  "cardRadius": 22,
+  "cardBorder": "#d6d6d6",
+  "shadow": { "blur": 40, "offsetY": 18, "opacity": 0.3 },
+
+  "slides": [
+    {
+      "n": 1,
+      "source": "slide1.png",
+      "crop": null,
+      "shot": "Login screen (dark), full window.",
+      "label": "Welcome"
+    },
+    {
+      "n": 2,
+      "source": "slide2.png",
+      "crop": null,
+      "shot": "Evaluator dashboard, full page. Crop will target the three stat cards plus the top of My Assignments.",
+      "label": "Dashboard"
+    },
+    {
+      "n": 3,
+      "source": "slide3.png",
+      "crop": null,
+      "shot": "Evaluator dashboard. Crop will target the My Assignments card on its own, showing a few rows and the Evaluate button.",
+      "label": "My Assignments"
+    },
+    {
+      "n": 4,
+      "source": "slide4.png",
+      "crop": null,
+      "shot": "Evaluator dashboard. Crop will target the All Proposals card, showing the Marks and Breakdown columns.",
+      "label": "All Proposals"
+    },
+    {
+      "n": 5,
+      "source": "slide5.png",
+      "crop": null,
+      "shot": "Evaluate page for any proposal — the split view with the PDF on the left and the rubric scoring panel on the right.",
+      "label": "Scoring"
+    },
+    {
+      "n": 6,
+      "source": "slide6.png",
+      "crop": null,
+      "shot": "Evaluate page with a PDF highlight/annotation open, or the video tab showing a timestamped comment.",
+      "label": "Notes & annotations"
+    },
+    {
+      "n": 7,
+      "source": "slide7.png",
+      "crop": null,
+      "shot": "Evaluator dashboard Top 15 Teams panel, or a grade breakdown dialog showing per-criterion scores.",
+      "label": "Final rankings"
+    },
+    {
+      "n": 8,
+      "source": "slide8.png",
+      "crop": null,
+      "shot": "The Change Password dialog, opened from the avatar menu in the navbar.",
+      "label": "Security"
+    }
+  ]
+}

@@ -22,82 +22,96 @@ interface Slide {
 
 // ─── Slide definitions ────────────────────────────────────────────────────────
 
+/* Copy lives in content.md (hackX 11.0 draft, v1) — keep the two in sync. */
 const SLIDES: Slide[] = [
   {
     eyebrow: "HACKX 11.0",
-    heading: "Welcome.",
+    heading: "Welcome aboard.",
     body: (
       <div className="space-y-4">
         <p>
-          This is a quick walkthrough of the evaluation platform. It covers your dashboard, your assignments, how to submit evaluations, and how final rankings are calculated. Takes under two minutes.
+          A short walkthrough of the evaluation portal — your dashboard, the
+          proposals assigned to you, how scoring works, and how final rankings
+          are decided.
+        </p>
+        <p
+          style={{
+            fontSize: "var(--bw-fs-sm)",
+            color: "var(--bw-content-secondary)",
+          }}
+        >
+          Under two minutes. You can reopen this guide at any time from your
+          profile menu.
         </p>
       </div>
     ),
   },
   {
-    eyebrow: "DASHBOARD",
-    heading: "Your evaluation overview.",
+    eyebrow: "YOUR DASHBOARD",
+    heading: "Everything at a glance.",
     body: (
       <div className="space-y-4">
         <p>
-          The dashboard shows your total assigned proposals, how many are still
-          ungraded, and the days remaining until the deadline.
+          Three cards track your progress: how many proposals are assigned to
+          you, how many are still ungraded, and how many days remain before the
+          deadline.
         </p>
         <p>
-          The Top 15 panel on the right reflects the live leaderboard based on
-          combined averages across all evaluators — it updates automatically as
-          evaluations are submitted.
+          The Top 15 panel is the live leaderboard, built from combined averages
+          across the whole panel. It updates on its own as evaluations come in.
         </p>
       </div>
     ),
   },
   {
     eyebrow: "MY ASSIGNMENTS",
-    heading: "Proposals assigned to you.",
+    heading: "Your work queue.",
     body: (
       <div className="space-y-4">
         <p>
-          This table lists every proposal you have been asked to evaluate. Each
-          row shows the team, direct links to the proposal document and
-          submission, and the current status.
+          Every proposal you have been asked to review sits here, with the team
+          name, direct links to the proposal document and pitch video, and its
+          current status.
         </p>
         <p>
-          When a proposal is ready, the Evaluate button becomes your entry
-          point. Use the Show Pending toggle to filter down to ungraded
-          submissions only.
+          Evaluate opens the scoring workspace. Flip on Show Pending to hide
+          everything you have already graded.
         </p>
       </div>
     ),
   },
   {
     eyebrow: "ALL PROPOSALS",
-    heading: "Full visibility across all submissions.",
+    heading: "See the whole field.",
     body: (
       <div className="space-y-4">
         <p>
-          All Proposals gives you a read-only view of every team in the
-          competition. You can see assigned evaluators and grading status across
-          the full pool.
+          All Proposals is a read-only view of every team in the competition —
+          who is evaluating what, and where each submission stands.
         </p>
         <p>
-          The Evaluate action only appears for proposals directly assigned to
-          you. Use the Graded only toggle or the All Evaluators filter to narrow
-          the view.
+          You can open any graded team&apos;s breakdown to see how the marks were
+          distributed. Evaluate only appears on proposals assigned to you.
         </p>
       </div>
     ),
   },
   {
-    eyebrow: "SUBMITTING AN EVALUATION",
-    heading: "Rubric-based scoring system.",
+    eyebrow: "SCORING",
+    heading: "Document and rubric, side by side.",
     body: (
       <div className="space-y-4">
         <p>
-          Opening a proposal loads the PDF viewer alongside the scoring panel.
-          Evaluations are split into two sections — Proposal (70 marks) and
-          Pitch Video (30 marks).
+          Opening a proposal puts the submission on the left and the rubric on
+          the right. Switch between the Document and Video tabs without losing
+          your place.
         </p>
-        <div className="flex flex-wrap gap-2" style={{ margin: "var(--bw-space-4) 0" }}>
+        <p>
+          Scoring is split into two sections — Proposal (70 marks) and Pitch
+          Video (30 marks). Each criterion lists its grade bands, so you can see
+          what range matches the performance level you have in mind.
+        </p>
+        <div className="flex flex-wrap gap-2" style={{ margin: "var(--bw-space-4) 0 0" }}>
           {["Excellent", "Good", "Developing", "Weak"].map((label) => (
             <span
               key={label}
@@ -115,23 +129,35 @@ const SLIDES: Slide[] = [
             </span>
           ))}
         </div>
+      </div>
+    ),
+  },
+  {
+    eyebrow: "NOTES & ANNOTATIONS",
+    heading: "Capture your reasoning as you read.",
+    body: (
+      <div className="space-y-4">
         <p>
-          Enter the mark directly into the field for each criterion. The grade
-          band labels show you what range corresponds to each performance level.
+          Highlight a passage in the proposal to pin a note to it, or drop a
+          timestamped comment while the pitch video plays. Your notes stay
+          attached to the exact spot that prompted them.
+        </p>
+        <p>
+          There is also an overall comment box for the summary judgement. Notes
+          are visible to organisers and are what make a score defensible later.
         </p>
       </div>
     ),
   },
   {
     eyebrow: "FINAL RANKINGS",
-    heading: "Determined by combined averages.",
+    heading: "Combined averages decide the outcome.",
     body: (
       <div className="space-y-4">
         <p>
-          Each proposal is reviewed by two evaluators. The final score is the
-          average of both evaluators&apos; total marks. Individual scores are not
-          visible across the panel — only the combined average appears in the
-          leaderboard.
+          Each proposal is reviewed by two evaluators, and the final score is the
+          average of both totals. Individual marks are never shown across the
+          panel — only the combined average reaches the leaderboard.
         </p>
         <div
           className="flex gap-3 rounded-xl"
@@ -144,8 +170,8 @@ const SLIDES: Slide[] = [
         >
           <span className="text-xl leading-none shrink-0 mt-0.5">⚠️</span>
           <p className="text-[14px] leading-snug font-medium">
-            Rankings shift as remaining evaluations come in. Final standings are
-            confirmed only once all evaluations are closed.
+            Rankings move as the remaining evaluations land. Standings are final
+            only once organisers lock evaluations.
           </p>
         </div>
         <p
@@ -155,21 +181,20 @@ const SLIDES: Slide[] = [
             color: "var(--bw-content-secondary)",
           }}
         >
-          If a result warrants discussion — an outlier, a borderline team, or a
-          scoring misalignment — coordinate directly with your co-evaluator to
-          reach a consensus.
+          If something looks off — an outlier, a borderline team, a scoring
+          mismatch — talk to your co-evaluator and settle it before the lock.
         </p>
       </div>
     ),
   },
   {
     eyebrow: "SECURITY",
-    heading: "Change your password.",
+    heading: "Set your own password.",
     body: (
       <div className="space-y-4">
         <p>
-          To ensure the integrity of the evaluation process, we recommend
-          updating your temporary password to a secure, private one.
+          Your account was issued with a temporary password. Replacing it now
+          keeps the evaluation record tied to you and only you.
         </p>
         <p
           style={{
@@ -177,8 +202,7 @@ const SLIDES: Slide[] = [
             color: "var(--bw-content-secondary)",
           }}
         >
-          You can skip this step and change it later from your profile settings
-          at any time.
+          You can skip this and do it later from your profile menu.
         </p>
       </div>
     ),
@@ -340,12 +364,12 @@ export function OnboardingModal({
                 textTransform: "uppercase",
               }}
             >
-              onboard{n}.gif
+              {slide.eyebrow}
             </span>
           ) : (
             <img
               key={`slide-img-${step}`}
-              src={`/onboarding/onboard${n}.gif`}
+              src={`/onboarding/slide${n}.webp`}
               alt=""
               onError={() => setImgFailed(true)}
               className="w-full h-full object-cover"
