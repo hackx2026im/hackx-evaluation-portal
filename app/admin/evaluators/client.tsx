@@ -30,7 +30,7 @@ import {
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { UserPlus, Users, Loader2, Trash2, AlertTriangle } from "lucide-react";
+import { UserPlus, Users, Loader2, Trash2, AlertTriangle, KeyRound } from "lucide-react";
 import type { Profile } from "@/lib/types/database";
 
 interface Props {
@@ -47,6 +47,10 @@ export function EvaluatorsClient({ profiles: initialProfiles, currentUserId }: P
   
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const [resetTarget, setResetTarget] = useState<Profile | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
 
   const router = useRouter();
 
@@ -120,6 +124,32 @@ export function EvaluatorsClient({ profiles: initialProfiles, currentUserId }: P
     }
   };
 
+  const handleResetPassword = async () => {
+    if (!resetTarget) return;
+    if (newPassword.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+    setResetLoading(true);
+    try {
+      const res = await fetch("/api/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: resetTarget.id, password: newPassword }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to reset password");
+
+      toast.success(`Password reset for ${resetTarget.full_name || "user"}`);
+      setResetTarget(null);
+      setNewPassword("");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Reset failed");
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
   const evaluators = profiles.filter((p) => p.role === "evaluator");
   const admins = profiles.filter((p) => p.role === "admin");
 
@@ -168,7 +198,7 @@ export function EvaluatorsClient({ profiles: initialProfiles, currentUserId }: P
               <Label htmlFor="invite-password" style={{ fontSize: "var(--bw-fs-sm)", color: "var(--bw-content-secondary)" }}>Initial Password</Label>
               <Input
                 id="invite-password"
-                type="text"
+                type="password"
                 placeholder="Set a secure password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -235,17 +265,29 @@ export function EvaluatorsClient({ profiles: initialProfiles, currentUserId }: P
                         {new Date(profile.created_at).toLocaleDateString()}
                       </TableCell>
                       <TableCell style={{ textAlign: "right", paddingRight: "var(--bw-space-6)" }}>
-                        {profile.id !== currentUserId && (
-                          <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            onClick={() => setDeleteId(profile.id)}
-                            style={{ color: "var(--bw-negative)" }}
-                            title="Delete User"
-                          >
-                            <Trash2 size={16} />
-                          </Button>
-                        )}
+                        <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--bw-space-1)" }}>
+                          {profile.role === "evaluator" && (
+                            <Button
+                              variant="ghost"
+                              size="icon-sm"
+                              onClick={() => { setResetTarget(profile); setNewPassword(""); }}
+                              title="Reset Password"
+                            >
+                              <KeyRound size={16} />
+                            </Button>
+                          )}
+                          {profile.id !== currentUserId && (
+                            <Button
+                              variant="ghost"
+                              size="icon-sm"
+                              onClick={() => setDeleteId(profile.id)}
+                              style={{ color: "var(--bw-negative)" }}
+                              title="Delete User"
+                            >
+                              <Trash2 size={16} />
+                            </Button>
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))
@@ -282,6 +324,45 @@ export function EvaluatorsClient({ profiles: initialProfiles, currentUserId }: P
             >
               {deleteLoading && <Loader2 size={16} style={{ marginRight: 8, animation: "spin 1s linear infinite" }} />}
               {deleteLoading ? "Deleting..." : "Confirm Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reset Password Dialog */}
+      <Dialog open={!!resetTarget} onOpenChange={(open: boolean) => { if (!open) { setResetTarget(null); setNewPassword(""); } }}>
+        <DialogContent style={{ maxWidth: 400 }}>
+          <DialogHeader>
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--bw-space-3)", marginBottom: "var(--bw-space-2)" }}>
+              <KeyRound size={24} style={{ color: "var(--bw-content-tertiary)" }} />
+              <DialogTitle>Reset Password</DialogTitle>
+            </div>
+          </DialogHeader>
+          <div style={{ padding: "0 var(--bw-space-6) var(--bw-space-4)", display: "flex", flexDirection: "column", gap: "var(--bw-space-3)" }}>
+            <p style={{ fontSize: "var(--bw-fs-sm)", color: "var(--bw-content-primary)", lineHeight: "var(--bw-lh-base)" }}>
+              Set a new password for <strong>{resetTarget?.full_name || "this user"}</strong>. They can log in immediately with it. Their evaluation data is not affected.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-2)" }}>
+              <Label htmlFor="reset-password" style={{ fontSize: "var(--bw-fs-sm)", color: "var(--bw-content-secondary)" }}>New Password</Label>
+              <Input
+                id="reset-password"
+                type="password"
+                placeholder="Enter a new password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                pill
+                style={{ width: "100%" }}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => { setResetTarget(null); setNewPassword(""); }}>Cancel</Button>
+            <Button
+              onClick={handleResetPassword}
+              disabled={resetLoading}
+            >
+              {resetLoading && <Loader2 size={16} style={{ marginRight: 8, animation: "spin 1s linear infinite" }} />}
+              {resetLoading ? "Resetting..." : "Reset Password"}
             </Button>
           </DialogFooter>
         </DialogContent>
