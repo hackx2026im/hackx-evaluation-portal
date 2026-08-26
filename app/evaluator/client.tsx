@@ -95,14 +95,7 @@ export function EvaluatorDashboardClient({
   const [currentFeedback, setCurrentFeedback] = useState<EvaluatorFeedback | null>(feedbackRecord);
   const [showLockedDialog, setShowLockedDialog] = useState(false);
 
-  // Auto-show feedback popup once onboarding is dismissed and feedback not yet seen
-  useEffect(() => {
-    if (!hasSeenOnboarding) return; // wait for onboarding to complete first
-    if (!hasSeenFeedbackPrompt) {
-      setIsFeedbackOpen(true);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // (Feedback auto-show logic moved below myAssignments)
 
 
 
@@ -144,6 +137,18 @@ export function EvaluatorDashboardClient({
     [proposals, assigneesByProposal, currentUserId]
   );
 
+  const isAllGraded = useMemo(() => {
+    return myAssignments.length > 0 && myAssignments.every((p) => gradedProposalIds.includes(p.id));
+  }, [myAssignments, gradedProposalIds]);
+
+  // Auto-show feedback popup when all assignments are graded and feedback not yet seen
+  useEffect(() => {
+    if (isOnboardingOpen) return; // wait for onboarding to complete if it's open
+    if (isAllGraded && !hasSeenFeedbackPrompt) {
+      const timer = setTimeout(() => setIsFeedbackOpen(true), 400);
+      return () => clearTimeout(timer);
+    }
+  }, [isAllGraded, isOnboardingOpen, hasSeenFeedbackPrompt]);
 
   const filteredAssignments = useMemo(() => {
     let result = myAssignments;
@@ -552,8 +557,8 @@ export function EvaluatorDashboardClient({
           isOpen={isOnboardingOpen} 
           onClose={() => {
             setIsOnboardingOpen(false);
-            // Show feedback after onboarding completes if not yet seen
-            if (!hasSeenFeedbackPrompt) {
+            // Show feedback after onboarding completes if not yet seen AND all graded
+            if (!hasSeenFeedbackPrompt && isAllGraded) {
               setTimeout(() => setIsFeedbackOpen(true), 400);
             }
           }} 
