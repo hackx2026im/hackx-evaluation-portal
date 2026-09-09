@@ -114,6 +114,31 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
     }
   };
 
+  const [exportingId, setExportingId] = useState<string | null>(null);
+
+  const handleExportProposalSheet = async (proposal: Proposal) => {
+    setExportingId(proposal.id);
+    try {
+      const res = await fetch(`/api/export-proposal-rubric?proposalId=${proposal.id}`);
+      if (!res.ok) throw new Error("Export failed");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const safeTeamName = proposal.team_name.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
+      a.href = url;
+      a.download = `${safeTeamName}-evaluation-sheet.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success("Evaluation sheet exported");
+    } catch {
+      toast.error("Failed to export evaluation sheet");
+    } finally {
+      setExportingId(null);
+    }
+  };
+
   const handleDownloadTop25 = () => {
     const top25 = proposals
       .filter((p) => p.is_graded)
@@ -944,6 +969,19 @@ export function AdminDashboardClient({ proposals, breakdownData = {}, evaluators
                               ) : (
                                 <Button variant="ghost" size="sm" disabled style={{ color: "var(--bw-content-disabled)" }}>Pending</Button>
                               )}
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                title="Export team info + rubric as a CSV sheet for offline evaluation"
+                                onClick={() => handleExportProposalSheet(proposal)}
+                                disabled={exportingId === proposal.id}
+                              >
+                                {exportingId === proposal.id ? (
+                                  <Loader2 size={14} style={{ animation: "spin 1s linear infinite" }} />
+                                ) : (
+                                  <FileDown size={14} />
+                                )}
+                              </Button>
                               <Button variant="destructive" size="sm" onClick={() => setDeletingId(proposal.id)}>Delete</Button>
                             </div>
                           </TableCell>

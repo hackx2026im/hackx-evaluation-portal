@@ -30,7 +30,7 @@ import {
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { UserPlus, Users, Loader2, Trash2, AlertTriangle, KeyRound } from "lucide-react";
+import { UserPlus, Users, Loader2, Trash2, AlertTriangle, KeyRound, FileDown } from "lucide-react";
 import type { Profile } from "@/lib/types/database";
 
 interface Props {
@@ -52,7 +52,35 @@ export function EvaluatorsClient({ profiles: initialProfiles, currentUserId }: P
   const [newPassword, setNewPassword] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
 
+  const [exportingId, setExportingId] = useState<string | null>(null);
+
   const router = useRouter();
+
+  const handleExportAssignments = async (evaluator: Profile) => {
+    setExportingId(evaluator.id);
+    try {
+      const res = await fetch(`/api/export-proposal-rubric?evaluatorId=${evaluator.id}`);
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || "Export failed");
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const safeName = (evaluator.full_name || "evaluator").replace(/[^a-z0-9]+/gi, "-").toLowerCase();
+      a.href = url;
+      a.download = `${safeName}-assignments.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success("Assignments exported");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to export assignments");
+    } finally {
+      setExportingId(null);
+    }
+  };
 
   const handleCreateAccount = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -266,6 +294,21 @@ export function EvaluatorsClient({ profiles: initialProfiles, currentUserId }: P
                       </TableCell>
                       <TableCell style={{ textAlign: "right", paddingRight: "var(--bw-space-6)" }}>
                         <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--bw-space-1)" }}>
+                          {profile.role === "evaluator" && (
+                            <Button
+                              variant="ghost"
+                              size="icon-sm"
+                              onClick={() => handleExportAssignments(profile)}
+                              disabled={exportingId === profile.id}
+                              title="Export assigned participants (CSV)"
+                            >
+                              {exportingId === profile.id ? (
+                                <Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} />
+                              ) : (
+                                <FileDown size={16} />
+                              )}
+                            </Button>
+                          )}
                           {profile.role === "evaluator" && (
                             <Button
                               variant="ghost"
