@@ -101,27 +101,24 @@ export async function GET(request: Request) {
           .map((c) => ({ ...c, sectionName: section.name }))
       );
 
-    // 5. Build the CSV — one row per proposal, with a
-    // (Criterion, Description, Score, Notes) column group per criterion.
+    // 5. Build the CSV — one row per team. Team name, drive link, and video
+    // link come first, then exactly one column per criterion (for the
+    // score). The criterion's name, section, max score and description are
+    // folded into that column's header (not repeated on every row).
     const csvEscape = (value: string | number) => {
       const str = String(value ?? "");
       return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
     };
 
-    const headerCells = ["Team Name", "Proposal (Drive) Link", "Video Link"];
+    const headerCells: (string | number)[] = ["Team Name", "Proposal (Drive) Link", "Video Link"];
     for (const c of criteria) {
-      headerCells.push(
-        `${c.sectionName} — ${c.name} (Max: ${c.max_score})`,
-        "Description",
-        "Score",
-        "Notes"
-      );
+      headerCells.push(`${c.sectionName} — ${c.name} (Max: ${c.max_score})\n${c.description ?? ""}`);
     }
 
     const rows = proposals.map((p) => {
       const dataCells: (string | number)[] = [p.team_name, p.proposal_url ?? "", p.video_url ?? ""];
-      for (const c of criteria) {
-        dataCells.push(c.name, c.description ?? "", "", "");
+      for (const _c of criteria) {
+        dataCells.push(""); // blank score cell to fill in
       }
       return dataCells;
     });
