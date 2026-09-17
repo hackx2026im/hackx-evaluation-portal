@@ -253,8 +253,8 @@ export function EvaluationViewClient({
 
       toast.success("Evaluation saved successfully!");
       setIsEditing(false);
-      router.push("/evaluator");
       router.refresh();
+      window.location.href = "/evaluator";
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "Failed to save evaluation"

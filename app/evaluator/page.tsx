@@ -2,6 +2,9 @@ import { createClient } from "@/lib/supabase/server";
 import { EvaluatorDashboardClient } from "./client";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function EvaluatorDashboardPage() {
   const supabase = await createClient();
 
@@ -13,6 +16,7 @@ export default async function EvaluatorDashboardPage() {
 
   const [
     { data: proposals },
+    { data: myEvaluationsData },
     { data: allEvaluations },
     { data: profiles },
     { data: assignments },
@@ -26,7 +30,7 @@ export default async function EvaluatorDashboardPage() {
       .from("proposals")
       .select("*")
       .order("created_at", { ascending: false }),
-    // Fetch ALL evaluations so we can display per-evaluator scores
+    // Explicitly fetch THIS evaluator's own evaluations to guarantee no row truncation or missing grades
     supabase
       .from("evaluations")
       .select(`
@@ -39,7 +43,14 @@ export default async function EvaluatorDashboardPage() {
           name,
           max_score
         )
-      `),
+      `)
+      .eq("evaluator_id", user.id)
+      .range(0, 4999),
+    // Fetch evaluations across all evaluators for co-evaluator score comparisons
+    supabase
+      .from("evaluations")
+      .select("proposal_id, evaluator_id, score")
+      .range(0, 9999),
     supabase
       .from("profiles")
       .select("id, full_name, has_seen_onboarding"),
@@ -84,8 +95,8 @@ export default async function EvaluatorDashboardPage() {
     daysLeft = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24))).toString();
   }
 
-  // My evaluations only
-  const myEvaluations = allEvaluations?.filter((e) => e.evaluator_id === user!.id) ?? [];
+  // My evaluations only (directly from myEvaluationsData, guaranteed complete)
+  const myEvaluations = myEvaluationsData ?? [];
 
   // Get unique proposal IDs that this evaluator has graded
   const gradedProposalIds = [
@@ -128,6 +139,18 @@ export default async function EvaluatorDashboardPage() {
         const name = evaluatorMap.get(evalId) ?? "Unknown";
         scoresByProposal[proposalId][evalId] = { name, total };
       }
+    }
+  }
+
+  // Fallback guarantee: ensure THIS evaluator's score is always present in scoresByProposal for all their graded proposals
+  const currentEvaluatorName = profiles?.find(p => p.id === user.id)?.full_name ?? "You";
+  for (const ev of myEvaluations) {
+    if (!scoresByProposal[ev.proposal_id]) scoresByProposal[ev.proposal_id] = {};
+    if (!scoresByProposal[ev.proposal_id][user.id]) {
+      const myProposalTotal = myEvaluations
+        .filter(e => e.proposal_id === ev.proposal_id)
+        .reduce((sum, e) => sum + (e.score || 0), 0);
+      scoresByProposal[ev.proposal_id][user.id] = { name: currentEvaluatorName, total: myProposalTotal };
     }
   }
 

@@ -1,6 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { AdminDashboardClient } from "./client";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
 
@@ -31,7 +34,8 @@ export default async function AdminDashboardPage() {
           name,
           max_score
         )
-      `),
+      `)
+      .range(0, 9999),
     supabase
       .from("profiles")
       .select("id, full_name")
