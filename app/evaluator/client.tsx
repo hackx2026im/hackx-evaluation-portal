@@ -584,7 +584,8 @@ export function EvaluatorDashboardClient({
                       {(() => {
                         const rankedProposals = [...proposals]
                           .filter((p) => p.is_graded)
-                          .sort((a, b) => b.total_score - a.total_score);
+                          .sort((a, b) => b.total_score - a.total_score)
+                          .slice(0, 35);
 
                         if (rankedProposals.length === 0) {
                           return (
