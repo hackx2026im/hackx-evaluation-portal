@@ -69,6 +69,9 @@ interface Props {
   hasSeenFeedbackPrompt?: boolean;
   evaluationsLocked?: boolean;
   maxPossibleScore?: number;
+  globalBreakdownData?: Record<string, any[]>;
+  evaluatorByProposal?: Record<string, string[]>;
+  globalOverallNotes?: Record<string, Record<string, string>>;
 }
 
 export function EvaluatorDashboardClient({
@@ -86,6 +89,9 @@ export function EvaluatorDashboardClient({
   hasSeenFeedbackPrompt = false,
   evaluationsLocked = false,
   maxPossibleScore = 100,
+  globalBreakdownData = {},
+  evaluatorByProposal = {},
+  globalOverallNotes = {},
 }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -549,6 +555,177 @@ export function EvaluatorDashboardClient({
                     )}
                   </TableBody>
                 </Table>
+                </div>
+              </CardContent>
+            </Card>
+
+{/* Rankings — All Teams Sorted by Score */}
+            <Card variant="flat" style={{ display: "flex", flexDirection: "column" }}>
+              <CardHeader style={{ padding: "var(--bw-space-6)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "var(--bw-space-3)" }}>
+                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: "var(--bw-chip)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <Trophy size={18} style={{ color: "var(--bw-content-primary)" }} />
+                  </div>
+                  <CardTitle style={{ fontSize: "var(--bw-fs-h4)" }}>Rankings</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent style={{ padding: "0 var(--bw-space-6) var(--bw-space-6)" }}>
+                <div style={{ overflowX: "auto", overflowY: "auto", maxHeight: "70vh", margin: "0 calc(var(--bw-space-6) * -1)" }}>
+                  <Table style={{ minWidth: 500 }}>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead style={{ paddingLeft: "var(--bw-space-6)", width: 50 }}>#</TableHead>
+                        <TableHead>Team</TableHead>
+                        <TableHead style={{ textAlign: "right" }}>Score</TableHead>
+                        <TableHead style={{ textAlign: "right", paddingRight: "var(--bw-space-6)", width: 90 }}>Details</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {(() => {
+                        const rankedProposals = [...proposals]
+                          .filter((p) => p.is_graded)
+                          .sort((a, b) => b.total_score - a.total_score);
+
+                        if (rankedProposals.length === 0) {
+                          return (
+                            <TableRow>
+                              <TableCell colSpan={4} style={{ height: 96, textAlign: "center", color: "var(--bw-content-disabled)" }}>
+                                No evaluated proposals yet.
+                              </TableCell>
+                            </TableRow>
+                          );
+                        }
+
+                        return rankedProposals.map((proposal, index) => {
+                          const evalNames = evaluatorByProposal[proposal.id] ?? [];
+                          const criteriaData = (globalBreakdownData[proposal.id] || []) as {
+                            name: string;
+                            max_score: number;
+                            scores: Record<string, number>;
+                            notes: Record<string, string>;
+                          }[];
+                          const proposalEvalScores = scoresByProposal[proposal.id] ?? {};
+
+                          return (
+                            <TableRow key={proposal.id}>
+                              <TableCell style={{ paddingLeft: "var(--bw-space-6)" }}>
+                                <span style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  width: 28,
+                                  height: 28,
+                                  borderRadius: "50%",
+                                  fontSize: "var(--bw-fs-xs)",
+                                  fontWeight: "var(--bw-fw-bold)" as any,
+                                  background: index < 3 ? "var(--bw-bg-inverse)" : "var(--bw-chip)",
+                                  color: index < 3 ? "var(--bw-content-inverse)" : "var(--bw-content-secondary)",
+                                }}>
+                                  {index + 1}
+                                </span>
+                              </TableCell>
+                              <TableCell>
+                                <div style={{ fontWeight: "var(--bw-fw-medium)" as any }}>{proposal.team_name}</div>
+                                {evalNames.length > 0 && (
+                                  <div style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-tertiary)", marginTop: 2 }}>
+                                    Evaluated by {evalNames.join(", ")}
+                                  </div>
+                                )}
+                              </TableCell>
+                              <TableCell style={{ textAlign: "right" }}>
+                                <span style={{ fontWeight: "var(--bw-fw-bold)" as any, fontSize: "var(--bw-fs-base)" }}>
+                                  {proposal.total_score}
+                                </span>
+                                <span style={{ color: "var(--bw-content-tertiary)", fontSize: "var(--bw-fs-xs)" }}>/{maxPossibleScore}</span>
+                              </TableCell>
+                              <TableCell style={{ textAlign: "right", paddingRight: "var(--bw-space-6)" }}>
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <Button variant="secondary" size="sm">
+                                      <BarChart size={14} style={{ marginRight: 4 }} />
+                                      View
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle style={{ fontSize: "var(--bw-fs-h4)" }}>{proposal.team_name}</DialogTitle>
+                                    </DialogHeader>
+                                    <div style={{ padding: "0 var(--bw-space-6) var(--bw-space-6)", display: "flex", flexDirection: "column", gap: "var(--bw-space-4)" }}>
+                                      {/* Total score */}
+                                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                        <span style={{ fontSize: "var(--bw-fs-sm)", color: "var(--bw-content-secondary)" }}>Total Score</span>
+                                        <Badge variant="positive" style={{ fontSize: "var(--bw-fs-base)", padding: "4px 12px" }}>
+                                          {proposal.total_score}/{maxPossibleScore}
+                                        </Badge>
+                                      </div>
+
+                                      {/* Evaluator scores summary */}
+                                      {Object.entries(proposalEvalScores).length > 0 && (
+                                        <div style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-2)" }}>
+                                          <div style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-tertiary)", fontWeight: "var(--bw-fw-medium)" as any }}>Evaluators</div>
+                                          {Object.entries(proposalEvalScores).map(([evalId, { name, total }]) => (
+                                            <div key={evalId} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "var(--bw-space-2) var(--bw-space-3)", borderRadius: "var(--bw-radius-sm)", border: "1px solid var(--bw-border)" }}>
+                                              <span style={{ fontSize: "var(--bw-fs-sm)", color: "var(--bw-content-secondary)" }}>{evalId === currentUserId ? "You" : name}</span>
+                                              <Badge variant="positive">{total}/{maxPossibleScore}</Badge>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
+
+                                      {/* Per-criterion breakdown with per-evaluator scores */}
+                                      {criteriaData.length > 0 && (
+                                        <div style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-2)", borderTop: "1px solid var(--bw-border)", paddingTop: "var(--bw-space-4)" }}>
+                                          <div style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-tertiary)", marginBottom: "var(--bw-space-1)" }}>Rubric Breakdown</div>
+                                          {criteriaData.map((criterion, i) => {
+                                            const evalEntries = Object.entries(criterion.scores);
+                                            return (
+                                              <div key={i} style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-1)", padding: "var(--bw-space-2) 0", borderBottom: i < criteriaData.length - 1 ? "1px dashed var(--bw-border)" : "none" }}>
+                                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "var(--bw-fs-sm)" }}>
+                                                  <span style={{ color: "var(--bw-content-secondary)", paddingRight: 16 }}>{criterion.name}</span>
+                                                  <span style={{ color: "var(--bw-content-tertiary)", fontSize: "var(--bw-fs-xs)" }}>max {criterion.max_score}</span>
+                                                </div>
+                                                {evalEntries.map(([evalId, score]) => {
+                                                  const evalName = profiles.find(p => p.id === evalId)?.full_name ?? "Unknown";
+                                                  return (
+                                                    <div key={evalId} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingLeft: 12, fontSize: "var(--bw-fs-xs)" }}>
+                                                      <span style={{ color: "var(--bw-content-tertiary)" }}>{evalId === currentUserId ? "You" : evalName}</span>
+                                                      <span style={{ fontWeight: "var(--bw-fw-medium)" as any }}>{score}/{criterion.max_score}</span>
+                                                    </div>
+                                                  );
+                                                })}
+                                              </div>
+                                            );
+                                          })}
+                                        </div>
+                                      )}
+
+                                      {/* Links */}
+                                      <div style={{ display: "flex", flexDirection: "column", gap: "var(--bw-space-2)", borderTop: "1px solid var(--bw-border)", paddingTop: "var(--bw-space-4)" }}>
+                                        {proposal.proposal_url && (
+                                          <a href={proposal.proposal_url} target="_blank" rel="noopener noreferrer">
+                                            <Button variant="secondary" size="sm" style={{ width: "100%", justifyContent: "flex-start" }}>
+                                              <FileText size={14} style={{ marginRight: 8 }} /> View Proposal PDF
+                                            </Button>
+                                          </a>
+                                        )}
+                                        {proposal.video_url && (
+                                          <a href={proposal.video_url} target="_blank" rel="noopener noreferrer">
+                                            <Button variant="secondary" size="sm" style={{ width: "100%", justifyContent: "flex-start" }}>
+                                              <ExternalLink size={14} style={{ marginRight: 8 }} /> Watch Pitch Video
+                                            </Button>
+                                          </a>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </DialogContent>
+                                </Dialog>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        });
+                      })()}
+                    </TableBody>
+                  </Table>
                 </div>
               </CardContent>
             </Card>

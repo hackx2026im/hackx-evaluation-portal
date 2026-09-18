@@ -18,10 +18,12 @@ export default async function EvaluatorDashboardPage() {
     { data: proposals },
     { data: myEvaluationsData },
     { data: allEvaluations },
+    { data: allEvaluationsDetailed },
     { data: profiles },
     { data: assignments },
     { data: settings },
     { data: myOverallNotesRows },
+    { data: allOverallNotesRows },
     { data: feedbackRow },
     { data: lockSetting },
     { data: rubricCriteria }
@@ -51,6 +53,21 @@ export default async function EvaluatorDashboardPage() {
       .from("evaluations")
       .select("proposal_id, evaluator_id, score")
       .range(0, 9999),
+    // Fetch all evaluations with rubric details for global breakdown view
+    supabase
+      .from("evaluations")
+      .select(`
+        proposal_id,
+        evaluator_id,
+        rubric_criterion_id,
+        score,
+        notes,
+        rubric_criteria (
+          name,
+          max_score
+        )
+      `)
+      .range(0, 9999),
     supabase
       .from("profiles")
       .select("id, full_name, has_seen_onboarding"),
@@ -66,6 +83,10 @@ export default async function EvaluatorDashboardPage() {
       .from("evaluation_overall_notes")
       .select("proposal_id, notes")
       .eq("evaluator_id", user.id),
+    // Fetch ALL evaluators' overall notes for global breakdown
+    supabase
+      .from("evaluation_overall_notes")
+      .select("proposal_id, evaluator_id, notes"),
     supabase
       .from("evaluator_feedback")
       .select("*")
@@ -162,6 +183,56 @@ export default async function EvaluatorDashboardPage() {
     }
   }
 
+  // Build global breakdown: proposalId -> criterion[] with per-evaluator scores/notes
+  // Same structure as admin breakdownData for consistency
+  const globalBreakdownData: Record<string, any[]> = {};
+  if (allEvaluationsDetailed) {
+    const globalAcc: Record<string, Map<string, { name: string; max_score: number; scores: Record<string, number>; notes: Record<string, string> }>> = {};
+    allEvaluationsDetailed.forEach((ev) => {
+      const criteria = Array.isArray(ev.rubric_criteria) ? ev.rubric_criteria[0] : ev.rubric_criteria;
+      if (!criteria) return;
+      if (!globalAcc[ev.proposal_id]) globalAcc[ev.proposal_id] = new Map();
+      const key = ev.rubric_criterion_id;
+      if (!globalAcc[ev.proposal_id].has(key)) {
+        globalAcc[ev.proposal_id].set(key, {
+          name: (criteria as any).name,
+          max_score: (criteria as any).max_score,
+          scores: {},
+          notes: {},
+        });
+      }
+      globalAcc[ev.proposal_id].get(key)!.scores[ev.evaluator_id] = ev.score;
+      if (ev.notes) {
+        globalAcc[ev.proposal_id].get(key)!.notes[ev.evaluator_id] = ev.notes;
+      }
+    });
+    for (const [proposalId, criteriaMap] of Object.entries(globalAcc)) {
+      globalBreakdownData[proposalId] = Array.from(criteriaMap.values());
+    }
+  }
+
+  // Build map: proposalId -> array of evaluator full_names who graded it
+  const evaluatorByProposal: Record<string, string[]> = {};
+  if (allEvaluations && profiles) {
+    const evalMap = new Map(profiles.map((p) => [p.id, p.full_name]));
+    for (const ev of allEvaluations) {
+      if (!evaluatorByProposal[ev.proposal_id]) evaluatorByProposal[ev.proposal_id] = [];
+      const fullName = evalMap.get(ev.evaluator_id);
+      if (fullName && !evaluatorByProposal[ev.proposal_id].includes(fullName)) {
+        evaluatorByProposal[ev.proposal_id].push(fullName);
+      }
+    }
+  }
+
+  // Build global overall notes: proposalId -> evaluatorId -> notes
+  const globalOverallNotes: Record<string, Record<string, string>> = {};
+  if (allOverallNotesRows) {
+    for (const row of allOverallNotesRows) {
+      if (!globalOverallNotes[row.proposal_id]) globalOverallNotes[row.proposal_id] = {};
+      globalOverallNotes[row.proposal_id][row.evaluator_id] = row.notes;
+    }
+  }
+
   return (
     <EvaluatorDashboardClient
       proposals={proposals ?? []}
@@ -179,6 +250,9 @@ export default async function EvaluatorDashboardPage() {
       hasSeenFeedbackPrompt={feedbackRow?.has_seen_prompt ?? false}
       evaluationsLocked={evaluationsLocked}
       maxPossibleScore={maxPossibleScore}
+      globalBreakdownData={globalBreakdownData}
+      evaluatorByProposal={evaluatorByProposal}
+      globalOverallNotes={globalOverallNotes}
     />
   );
 }
