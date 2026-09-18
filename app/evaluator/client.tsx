@@ -599,6 +599,11 @@ export function EvaluatorDashboardClient({
 
                         return rankedProposals.map((proposal, index) => {
                           const evalNames = evaluatorByProposal[proposal.id] ?? [];
+                          // Also include assigned evaluators who may not have graded yet
+                          const assignedNames = (assigneesByProposal[proposal.id] ?? [])
+                            .map(id => evaluatorMap.get(id))
+                            .filter((n): n is string => !!n);
+                          const allNames = [...new Set([...assignedNames, ...evalNames])];
                           const criteriaData = (globalBreakdownData[proposal.id] || []) as {
                             name: string;
                             max_score: number;
@@ -627,9 +632,9 @@ export function EvaluatorDashboardClient({
                               </TableCell>
                               <TableCell>
                                 <div style={{ fontWeight: "var(--bw-fw-medium)" as any }}>{proposal.team_name}</div>
-                                {evalNames.length > 0 && (
+                                {allNames.length > 0 && (
                                   <div style={{ fontSize: "var(--bw-fs-xs)", color: "var(--bw-content-tertiary)", marginTop: 2 }}>
-                                    Evaluated by {evalNames.join(", ")}
+                                    Evaluated by {allNames.join(", ")}
                                   </div>
                                 )}
                               </TableCell>
